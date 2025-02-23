@@ -50,10 +50,10 @@ export const Footer = () => {
 
           {/* Community */}
           <div className="flex flex-col items-center">
-            <h3 className="text-md font-semibold mb-4 text-gray-300">
+            <h3 className="text-md font-semibold mb-4 text-gray-300 text-center">
               Community
             </h3>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-sm flex flex-col items-center">
               <a
                 href="https://x.com/docal_pro"
                 target="_blank"

@@ -63,6 +63,10 @@ body {
   animation: rotate-subtle 10s linear infinite;
 }
 
+.logo-rotate-fast {
+  animation: rotate-subtle 3s linear infinite;
+}
+
 .card {
   transition: all 0.3s ease;
 }

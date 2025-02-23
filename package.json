@@ -1,5 +1,5 @@
 {
-  "name": "docal-homepage",
+  "name": "docal-app",
   "version": "0.0.1",
   "scripts": {
     "dev": "next dev",
