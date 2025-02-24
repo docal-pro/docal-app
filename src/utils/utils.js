@@ -1,0 +1,22 @@
+export const scamClassifiers = [
+    "Promoting a scam",
+    "Promoting pump & dump scheme",
+    "Promoting a rug pull",
+    "Partnering with scam project",
+    "Partnering with scammer",
+    "Irresponsible promotion",
+    "Fake giveaways & airdrops",
+    "Fake engagement farming",
+    "Spreading misinformation",
+    "Shilling low-liquidity tokens",
+    "Using bot-driven manipulation",
+    "Paid promotions without disclosure",
+    "Multi-account astroturfing",
+    "Promoting hacked wallets/tools",
+    "Artificially inflating project hype",
+    "Associating with known fraudsters",
+    "Promoting Ponzi-like structures",
+    "Encouraging FOMO-based investing",
+    "Soliciting private keys or seed phrases",
+    "Pump group leader/whale manipulation"
+];

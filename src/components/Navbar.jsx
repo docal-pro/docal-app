@@ -29,7 +29,7 @@ export const Navbar = () => {
                 <div className="flex items-center gap-4">
                     <img src="./assets/logo-light.png" width="80" className="transition-transform logo-rotate" alt="DOCAL Logo" />
                     <div className='flex flex-col items-start'>
-                        <h1 className="text-4xl font-bold text-white mt-2 font-ocr">DOCAL <span className='text-gray-400'>App</span></h1>
+                        <h1 className="text-4xl font-bold text-white mt-2 font-ocr">DOCAL <span className='text-gray-400'>AI</span></h1>
                         <h2 className="text-sm lg:text-md font-bold text-center bg-gradient-to-br from-gray-300 to-gray-200 bg-clip-text text-transparent font-ocr tracking-tight">
                             Decentralised Organisation<br />for Class-Action Lawsuits
                         </h2>

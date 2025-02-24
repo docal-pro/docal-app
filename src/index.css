@@ -75,3 +75,14 @@ body {
   transform: translateY(-4px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
+
+.scrollbar::-webkit-scrollbar {
+  height: 12px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: theme("colors.scrollbar"); /* Use Tailwind color */
+  border-radius: 2px;
+}
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}

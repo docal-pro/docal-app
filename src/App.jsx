@@ -1,82 +1,75 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
-import { Search } from 'lucide-react';
+import { Sidebar } from "./components/Sidebar";
+import { InvestigateX } from "./components/sidebar/InvestigateX";
+import { Dashboard } from "./components/sidebar/Dashboard";
+import { SubmitInfo } from "./components/sidebar/SubmitInfo";
+
+const sections = [
+    { name: "dashboard", label: "Dashboard", component: Dashboard },
+    { name: "investigate_x", label: "Investigate", component: InvestigateX },
+    { name: "submit_info", label: "Submit Information", component: SubmitInfo },
+];
 
 const App = () => {
-    const [username, setUsername] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [error, setError] = useState('');
+    const [selectedSection, setSelectedSection] = useState("dashboard");
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const validateTwitterUsername = (username) => {
-        const pattern = /^[A-Za-z0-9_]{1,15}$/;
-        return pattern.test(username);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!validateTwitterUsername(username)) {
-            setError('Please enter a valid Twitter username');
-            return;
-        }
-
-        setError('');
-        setIsModalOpen(true);
-
-        // Placeholder for background process
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        setIsModalOpen(false);
-    };
+    const SelectedComponent = sections.find((s) => s.name === selectedSection)?.component;
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
             <Navbar />
 
-            <main className="flex-grow px-6 py-12 bg-black bg-opacity-25">
-                <h2 className="text-2xl lg:text-4xl font-bold text-center mb-16 bg-gradient-to-br from-gray-300 to-gray-200 bg-clip-text text-transparent font-ocr tracking-tight">
+            {/* Main Content */}
+            <main className="flex-grow flex flex-col items-center px-6 pt-16 pb-12 bg-black bg-opacity-25 w-full gap-8">
+                <h2 className="text-2xl lg:text-4xl font-bold text-center bg-gradient-to-br from-gray-300 to-gray-200 bg-clip-text text-transparent font-ocr tracking-tight">
                     Crypto and Web3 Watchdog
                 </h2>
-                <h3 className="text-md lg:text-lg font-bold text-center mb-4 bg-gradient-to-br from-gray-300 to-gray-200 bg-clip-text text-transparent font-ocr tracking-tight">
-                    Enter Twitter/X username below to index the individual
-                </h3>
-                <div className="max-w-xl mx-auto h-6 lg:mt-1 mb-16">
-                    <form onSubmit={handleSubmit} className="relative">
-                        <div className="flex items-center">
-                            <input
-                                type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Enter Twitter/X @"
-                                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-green-500 text-gray-100"
-                            />
-                            <button
-                                type="submit"
-                                className="px-6 py-3 bg-green-600 border border-green-600 hover:bg-transparent rounded-r-lg transition-colors"
-                            >
-                                <Search className="w-6 h-6" />
-                            </button>
-                        </div>
-                        {error && (
-                            <p className="absolute -bottom-6 left-0 text-red-500 text-sm">{error}</p>
-                        )}
-                    </form>
+
+                {/* Mobile Dropdown for Sidebar */}
+                <div className="md:hidden w-full">
+                    <button
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="w-full text-left bg-gray-800 text-gray-300 py-3 px-4 rounded-md flex justify-between items-center"
+                    >
+                        {sections.find((s) => s.name === selectedSection)?.label || "Select Section"}
+                        <span>{isDropdownOpen ? <i className="fa-solid fa-arrow-up"></i> : <i className="fa-solid fa-arrow-down"></i>}</span>
+                    </button>
+                    {isDropdownOpen && (
+                        <ul className="bg-gray-800 rounded-md mt-2">
+                            {sections.map((section) => (
+                                <li
+                                    key={section.name}
+                                    onClick={() => { setSelectedSection(section.name); setIsDropdownOpen(false); }}
+                                    className="px-4 py-2 hover:bg-accent-steel hover:bg-opacity-30 cursor-pointer"
+                                >
+                                    {section.label}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+
+                {/* Desktop Layout */}
+                <div className="flex w-full max-w-5xl">
+                    {/* Sidebar (Hidden on Mobile) */}
+                    <div className="hidden md:block w-1/4">
+                        <Sidebar sections={sections} selected={selectedSection} onSelect={setSelectedSection} />
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="w-full md:w-3/4 flex justify-center">
+                        {SelectedComponent && <SelectedComponent />}
+                    </div>
                 </div>
             </main>
 
+            {/* Footer Sticks to Bottom */}
             <footer className="text-center">
                 <Footer />
             </footer>
-
-            {/* Loading Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-gray-800 p-8 rounded-lg shadow-xl items-center justify-center flex flex-col">
-                        <img src="./assets/logo-light.png" width="100" className="transition-transform logo-rotate-fast items-center" alt="DOCAL Loader" />
-                        <p className="text-center mt-4 text-gray-300 font-ocr text-xl tracking-tight">Beep Boop</p>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
