@@ -13,7 +13,7 @@ export const Dashboard = () => {
         { key: "trust", label: "Trust" },
     ];
 
-    const actionColumns = ["Investigate", "Slash", "Share"];
+    const actionColumns = ["Investigate", "Share"];
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -95,7 +95,7 @@ export const Dashboard = () => {
                                 </th>
                             ))}
                             {actionColumns.map((col, index) => (
-                                <th key={index} className="px-6 pt-2 pb-1 lg:px-4 border border-gray-600 text-center">{col}</th>
+                                <th key={index} className="px-7 pt-2 pb-1 lg:px-4 border border-gray-600 text-center">{col}</th>
                             ))}
                         </tr>
                     </thead>
@@ -111,24 +111,43 @@ export const Dashboard = () => {
 
                                 {/* Action Buttons */}
                                 <td className="lg:px-4 pl-2 py-1 lg:py-2 border border-gray-700 text-center">
-                                    <button className="mx-1 px-2 py-1 bg-accent-primary hover:bg-transparent rounded">
-                                        <i className="fa-solid fa-scale-unbalanced"></i>
+                                    <button className="mx-[2px] px-1 lg:px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
+                                        <i className="fa-solid fa-file-arrow-down"></i>
+                                        <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-26 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
+                                            {`Scrape`}
+                                        </span>
                                     </button>
-                                    <button className="mx-1 px-2 py-1 bg-blue-600 hover:bg-transparent rounded">
-                                        <i className="fa-solid fa-scale-balanced"></i>
+                                    <button className="mx-[2px] px-1 lg:px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
+                                        <i className="fa-solid fa-mortar-pestle"></i>
+                                        <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-36 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
+                                            {`Contextualise`}
+                                        </span>
                                     </button>
-                                    <button className="mx-1 px-2 py-1 bg-green-600 hover:bg-transparent rounded">
+                                    <button className="mx-[2px] px-1 lg:px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
+                                        <i className="fa-solid fa-list-check"></i>
+                                        <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
+                                            {`Classify`}
+                                        </span>
+                                    </button>
+                                    <button className="mx-[2px] px-1 lg:px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
+                                        <i className="fa-solid fa-object-group"></i>
+                                        <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
+                                            {`Extract`}
+                                        </span>
+                                    </button>
+                                    <button className="mx-[2px] px-1 lg:px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
                                         <i className="fa-solid fa-scale-unbalanced-flip"></i>
-                                    </button>
-                                </td>
-                                <td className="lg:px-4 pl-1 lg:pl-5 py-1 lg:py-2 border border-gray-700 text-center">
-                                    <button className="px-2 py-1 bg-red-600 hover:bg-transparent rounded">
-                                        <i className="fa-solid fa-ban"></i>
+                                        <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-30 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
+                                            {`Evaluate`}
+                                        </span>
                                     </button>
                                 </td>
                                 <td className="lg:px-4 pl-2 py-1 lg:py-2 border border-gray-700 text-center">
-                                    <button className="px-2 py-1 bg-orange-700 hover:bg-transparent rounded">
+                                    <button className="px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
                                         <i className="fa-solid fa-bug-slash"></i>
+                                        <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-26 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
+                                            {`Share`}
+                                        </span>
                                     </button>
                                 </td>
                             </tr>
