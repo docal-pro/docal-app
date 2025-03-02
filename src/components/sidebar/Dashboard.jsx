@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { fakeUsers, processScore } from "../../utils/utils";
+import { callProxy } from "../../utils/api";
 
 export const Dashboard = () => {
     const [users, setUsers] = useState([]);
@@ -8,28 +10,25 @@ export const Dashboard = () => {
     const dataColumns = [
         { key: "username", label: "User" },
         { key: "score", label: "Score" },
-        { key: "risk", label: "Risk" },
+        { key: "trust", label: "Trust" },
     ];
 
     const actionColumns = ["Investigate", "Slash", "Share"];
 
     useEffect(() => {
-        const usernames = [
-            "@crypto_scammer", "@honest_trader", "@shady_dealer", "@blockchain_boss",
-            "@nft_hoarder", "@pump_and_dump", "@wallet_whale", "@rugpull_rick",
-            "@defi_guru", "@moon_maniac", "@airdropped", "@token_flipz",
-            "@eth_evader", "@solana_sniper", "@scam_alert", "@anon_hodler",
-            "@metaverse_mogul", "@binance_bandit", "@whale_watcher", "@dust_attack"
-        ];
-
-        const generatedUsers = usernames.map((username, i) => ({
-            id: i + 1,
-            username,
-            score: Math.floor(Math.random() * 101),
-            risk: ["Low", "Medium", "High"][Math.floor(Math.random() * 3)],
-        }));
-
-        setUsers(generatedUsers);
+        const fetchUsers = async () => {
+            const data = await callProxy('db');
+            const headers = data.columns;
+            const db = data.rows;
+            // Check if db is empty
+            if (db.length > 0) {
+                const users = processScore(db);
+                setUsers(users);
+            } else {
+                setUsers(fakeUsers);
+            }
+        };
+        fetchUsers();
     }, []);
 
     const sortData = (key) => {
@@ -54,10 +53,13 @@ export const Dashboard = () => {
         return "text-green-500";
     };
 
-    const getRiskColor = (risk) => {
-        if (risk === "High") return "text-orange-500";
-        if (risk === "Medium") return "text-blue-400";
-        return "text-green-500";
+    const getTrustColor = (trust) => {
+        if (trust === "Scam") return "text-red-400";
+        if (trust === "High") return "text-orange-400";
+        if (trust === "Medium") return "text-blue-400";
+        if (trust === "Low") return "text-lime-400";
+        if (trust === "Safe") return "text-green-400";
+        if (trust === "Unknown") return "text-gray-400";
     };
 
     const filteredUsers = users.filter(user => user.username.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -105,7 +107,7 @@ export const Dashboard = () => {
                                     {user.score}<span className="text-[3px]">{" "}</span>
                                     <span className="font-ocr text-gray-500 text-md">{"%"}</span>
                                 </td>
-                                <td className={`lg:px-4 px-1 pl-4 lg:pl-2 py-0 lg:py-2 border border-gray-700 ${getRiskColor(user.risk)}`}>{user.risk}</td>
+                                <td className={`lg:px-4 px-1 pl-4 lg:pl-2 py-0 lg:py-2 border border-gray-700 ${getTrustColor(user.trust)}`}>{user.trust}</td>
 
                                 {/* Action Buttons */}
                                 <td className="lg:px-4 pl-2 py-1 lg:py-2 border border-gray-700 text-center">

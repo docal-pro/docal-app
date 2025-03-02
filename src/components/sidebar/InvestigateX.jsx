@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Dropdown } from '../utils/Dropdown';
-import { scamClassifiers } from '../../utils/utils';
+import { scamClassifiers, callProxy } from '../../utils/utils';
 import { Search } from 'lucide-react';
 
 export const InvestigateX = () => {

@@ -6,7 +6,9 @@
  * @returns {Promise<any>} The parsed response data
  */
 export async function callProxy(method, httpMethod = "GET", data = null) {
-  const proxyUrl = `${process.env.NEXT_PUBLIC_PROXY_URL || "http://localhost:8080"}/${method}`;
+  const proxyUrl = `${
+    process.env.NEXT_PUBLIC_PROXY_URL || "http://localhost:8080"
+  }/${method}`;
 
   const options = {
     method: httpMethod,
