@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Dropdown } from '../utils/Dropdown';
-import { scamClassifiers, callProxy } from '../../utils/utils';
+import { Dropdown } from '../../utils/Dropdown';
+import { scamClassifiers, callProxy } from '../../../utils/utils';
 import { Search } from 'lucide-react';
 
-export const InvestigateX = () => {
+export const Discourse = () => {
     const [mode, setMode] = useState('Tweeter'); // 'Tweeter' or 'Tweet'
     const [input, setInput] = useState('');
     const [selectedClass, setSelectedClass] = useState('');

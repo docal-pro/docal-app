@@ -2,13 +2,27 @@ import { useState } from "react";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { Sidebar } from "./components/Sidebar";
-import { InvestigateX } from "./components/sidebar/InvestigateX";
+import { Twitter } from "./components/sidebar/investigate/Twitter";
+import { Discourse } from "./components/sidebar/investigate/Discourse";
 import { Dashboard } from "./components/sidebar/Dashboard";
 import { SubmitInfo } from "./components/sidebar/SubmitInfo";
+import { TinyDropdown } from "./components/utils/TinyDropdown";
+
+const Investigate = () => {
+    return (<></>);
+};
 
 const sections = [
     { name: "dashboard", label: "Dashboard", component: Dashboard },
-    { name: "investigate_x", label: "Investigate", component: InvestigateX },
+    {
+        name: "investigate",
+        label: "Investigate",
+        component: Investigate,
+        subItems: [
+            { name: "twitter", label: "Twitter", component: Twitter },
+            { name: "discourse", label: "Discourse", component: Discourse }
+        ]
+    },
     { name: "submit_info", label: "Submit Information", component: SubmitInfo },
 ];
 
@@ -16,7 +30,21 @@ const App = () => {
     const [selectedSection, setSelectedSection] = useState("dashboard");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const SelectedComponent = sections.find((s) => s.name === selectedSection)?.component;
+    const foundSection = sections.find(s => {
+        if (s.name === selectedSection) {
+            return true;
+        }
+        if (s.subItems) {
+            const subItemMatch = s.subItems.find(sub => `${s.name}_${sub.name}` === selectedSection);
+            return !!subItemMatch;
+        }
+        return false;
+    });
+
+    const SelectedComponent = foundSection?.subItems?.find(sub =>
+        `${foundSection.name}_${sub.name}` === selectedSection
+    )?.component ||
+        sections.find(s => s.name === selectedSection)?.component;
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
@@ -40,13 +68,24 @@ const App = () => {
                     {isDropdownOpen && (
                         <ul className="bg-gray-800 rounded-md mt-2">
                             {sections.map((section) => (
-                                <li
-                                    key={section.name}
-                                    onClick={() => { setSelectedSection(section.name); setIsDropdownOpen(false); }}
-                                    className="px-4 py-2 hover:bg-accent-steel hover:bg-opacity-30 cursor-pointer"
-                                >
-                                    {section.label}
-                                </li>
+                                <>
+                                    <li
+                                        key={section.name}
+                                        onClick={() => { setSelectedSection(section.name); setIsDropdownOpen(false); }}
+                                        className="px-4 py-2 hover:bg-accent-steel hover:bg-opacity-30 cursor-pointer"
+                                    >
+                                        {section.label}
+                                    </li>
+                                    {section.subItems && section.subItems.map((subItem) => (
+                                        <li
+                                            key={`${section.name}-${subItem.name}`}
+                                            onClick={() => { setSelectedSection(`${section.name}_${subItem.name}`); setIsDropdownOpen(false); }}
+                                            className="px-8 py-2 hover:bg-accent-steel hover:bg-opacity-30 cursor-pointer text-sm"
+                                        >
+                                            {subItem.label}
+                                        </li>
+                                    ))}
+                                </>
                             ))}
                         </ul>
                     )}

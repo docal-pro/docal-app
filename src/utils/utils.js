@@ -1,4 +1,4 @@
-import { InvestigateX } from "../components/sidebar/InvestigateX";
+import { InvestigateX } from "../components/sidebar/investigate/Twitter";
 
 // Scam Classifiers
 export const scamClassifiers = [
