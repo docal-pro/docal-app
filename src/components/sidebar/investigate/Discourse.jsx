@@ -100,7 +100,7 @@ export const Discourse = () => {
             </div>
           </div>
 
-          <div className="text-md lg:text-lg font-bold w-full text-center mb-4 bg-gradient-to-br from-gray-300 to-gray-200 bg-clip-text text-transparent font-ocr tracking-tight">
+          <div className="text-md lg:text-lg font-bold w-full text-center mb-4 bg-gradient-to-br from-gray-300 to-gray-200 bg-clip-text text-transparent font-ocr tracking-tight text-gray-300 disabled:text-gray-500 disabled:bg-opacity-50 disabled:border-opacity-50 disabled:cursor-not-allowed">
             {mode === "Profile"
               ? "Enter Discourse forum URL & username below to index the individual"
               : "Enter a Discourse post link to investigate its content"}
@@ -113,7 +113,7 @@ export const Discourse = () => {
                 value={forumUrl}
                 onChange={(e) => setForumUrl(e.target.value)}
                 placeholder="Enter Discourse Forum URL"
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-green-500 text-gray-100"
+                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-green-500 placeholder:text-gray-500 text-gray-300"
               />
               <span className="relative group ml-4">
                 <span className="cursor-pointer text-xs lg:text-lg text-gray-500">
@@ -154,11 +154,11 @@ export const Discourse = () => {
               onChange={(e) => setInput(e.target.value)}
               placeholder={
                 mode === "Profile"
-                  ? "Enter Discourse Username"
-                  : "Enter Discourse Post Link"
+                  ? "Enter Discourse username"
+                  : "Enter comma separated posts"
               }
               disabled={!selectedClass}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-green-500 text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-green-500 text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-gray-500"
             />
             <button
               type="button"
@@ -178,7 +178,7 @@ export const Discourse = () => {
                 <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-72 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
                   {mode === "Profile"
                     ? "Enter the Discourse @username to investigate"
-                    : "Enter a Discourse post link for analysis"}
+                    : "Enter post links for analysis"}
                 </span>
               </span>
             </span>

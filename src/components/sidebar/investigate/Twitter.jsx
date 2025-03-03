@@ -201,7 +201,7 @@ export const Twitter = () => {
               />
             </div>
             <span className="relative group ml-4">
-              <span className="cursor-pointer text-xs lg:text-lg text-gray-500">
+              <span className="cursor-pointer text-sm lg:text-lg text-gray-500">
                 &#9432;
                 <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-72 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
                   {`This helps the AI with context about your input`}
@@ -218,10 +218,10 @@ export const Twitter = () => {
               placeholder={
                 mode === "Tweeter"
                   ? "Enter Twitter/X @"
-                  : "Enter tweet link & press comma to add"
+                  : "Enter comma separated tweets"
               }
               disabled={!selectedClass}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-blue-500 text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-blue-500 text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-gray-500"
             />
             <button
               type="button"
@@ -236,12 +236,12 @@ export const Twitter = () => {
               <Search className="w-6 h-6" />
             </button>
             <span className="relative group ml-4">
-              <span className="cursor-pointer text-xs lg:text-lg text-gray-500">
+              <span className="cursor-pointer text-sm lg:text-lg text-gray-500">
                 &#9432;
                 <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-72 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
                   {mode === "Tweeter"
                     ? "Enter the Twitter/X username to investigate"
-                    : "Enter a tweet link for analysis"}
+                    : "Enter tweet links for analysis"}
                 </span>
               </span>
             </span>
