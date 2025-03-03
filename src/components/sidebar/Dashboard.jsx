@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { fakeUsers, processScore } from "../../utils/utils";
+import { useState, useEffect, use } from "react";
+import { fakeUsers, processScore, getAction, getScoreColor, getTrustColor } from "../../utils/utils";
 import { callProxy } from "../../utils/api";
 
 export const Dashboard = () => {
@@ -31,38 +31,30 @@ export const Dashboard = () => {
         fetchUsers();
     }, []);
 
-    const sortData = (key) => {
-        let direction = "asc";
-        if (sortConfig.key === key && sortConfig.direction === "asc") {
-            direction = "desc";
-        }
-        setSortConfig({ key, direction });
-
-        setUsers((prevUsers) => {
-            return [...prevUsers].sort((a, b) => {
-                if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-                if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-                return 0;
-            });
-        });
-    };
-
-    const getScoreColor = (score) => {
-        if (score < 33) return "text-orange-500";
-        if (score < 67) return "text-blue-400";
-        return "text-green-500";
-    };
-
-    const getTrustColor = (trust) => {
-        if (trust === "Scam") return "text-red-400";
-        if (trust === "High") return "text-orange-400";
-        if (trust === "Medium") return "text-blue-400";
-        if (trust === "Low") return "text-lime-400";
-        if (trust === "Safe") return "text-green-400";
-        if (trust === "Unknown") return "text-gray-400";
-    };
-
     const filteredUsers = users.filter(user => user.username.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    const handleInvestigate = async (username, action) => {
+        const data = await callProxy('process', 'POST', {
+            func: getAction(action),
+            data: username,
+        });
+
+        if (data.success) {
+            const updatedUsers = users.map(user => {
+                if (user.username === username) {
+                    return { ...user, investigate: user.investigate + 1 };
+                }
+                return user;
+            });
+            setUsers(updatedUsers);
+        } else {
+            console.error("❌ Error: " + data.error);
+        }
+    }
+
+    const handleShare = async (user) => {
+        console.error("❌ Not yet implemented");
+    }
 
     return (
         <div className="w-full max-w-6xl mx-auto px-0 md:px-4 lg:px-6 py-6 text-gray-300 -mt-6 max-h-[600px] text-xs md:text-sm lg:text-md overflow-y-auto scrollbar">
@@ -111,31 +103,31 @@ export const Dashboard = () => {
 
                                 {/* Action Buttons */}
                                 <td className="lg:px-4 pl-2 py-1 lg:py-2 border border-gray-700 text-center">
-                                    <button className="mx-[2px] px-1 lg:px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
+                                    <button onClick={() => handleInvestigate(user.username, 'scrape')} className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 1 ? 'bg-white bg-opacity-10' : 'bg-blue-400 bg-opacity-70'} hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}>
                                         <i className="fa-solid fa-file-arrow-down"></i>
                                         <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-26 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
                                             {`Scrape`}
                                         </span>
                                     </button>
-                                    <button className="mx-[2px] px-1 lg:px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
+                                    <button onClick={() => handleInvestigate(user.username, 'contextualise')} className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 2 ? 'bg-white bg-opacity-10' : 'bg-blue-400 bg-opacity-70'} hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}>
                                         <i className="fa-solid fa-mortar-pestle"></i>
                                         <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-36 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
                                             {`Contextualise`}
                                         </span>
                                     </button>
-                                    <button className="mx-[2px] px-1 lg:px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
+                                    <button onClick={() => handleInvestigate(user.username, 'classify')} className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 3 ? 'bg-white bg-opacity-10' : 'bg-blue-400 bg-opacity-70'} hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}>
                                         <i className="fa-solid fa-list-check"></i>
                                         <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
                                             {`Classify`}
                                         </span>
                                     </button>
-                                    <button className="mx-[2px] px-1 lg:px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
+                                    <button onClick={() => handleInvestigate(user.username, 'extract')} className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 4 ? 'bg-white bg-opacity-10' : 'bg-blue-400 bg-opacity-70'} hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}>
                                         <i className="fa-solid fa-object-group"></i>
                                         <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
                                             {`Extract`}
                                         </span>
                                     </button>
-                                    <button className="mx-[2px] px-1 lg:px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
+                                    <button onClick={() => handleInvestigate(user.username, 'evaluate')} className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 5 ? 'bg-white bg-opacity-10' : 'bg-blue-400 bg-opacity-70'} hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}>
                                         <i className="fa-solid fa-scale-unbalanced-flip"></i>
                                         <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-30 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
                                             {`Evaluate`}
@@ -143,7 +135,7 @@ export const Dashboard = () => {
                                     </button>
                                 </td>
                                 <td className="lg:px-4 pl-2 py-1 lg:py-2 border border-gray-700 text-center">
-                                    <button className="px-2 py-1 bg-white bg-opacity-10 hover:bg-transparent rounded relative group">
+                                    <button onClick={() => handleShare(user)} disabled className="px-2 py-1 bg-white bg-opacity-10 rounded relative group disabled:cursor-not-allowed disabled:bg-opacity-10">
                                         <i className="fa-solid fa-bug-slash"></i>
                                         <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-26 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
                                             {`Share`}

@@ -44,7 +44,7 @@ export const Discourse = () => {
             const data = await callProxy('state');
             console.log(data);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('❌ Error:', error);
         }
 
         // Post request to process
@@ -53,7 +53,7 @@ export const Discourse = () => {
             const result = await callProxy('process', 'POST', process);
             console.log(result);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('❌ Error:', error);
         }
 
         await new Promise(resolve => setTimeout(resolve, 5000));

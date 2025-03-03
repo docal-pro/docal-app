@@ -32,21 +32,13 @@ export const Twitter = () => {
         setError('');
         setIsModalOpen(true);
 
-        // Get Status
-        try {
-            const data = await callProxy('state');
-            console.log(data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-
         // Post request to process
         try {
-            const process = { func: 'classifier', data: 'frank' };
+            const process = { func: mode === 'Tweeter' ? 'indexer' : 'scraper', data: input };
             const result = await callProxy('process', 'POST', process);
             console.log(result);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('❌ Error:', error);
         }
 
         await new Promise(resolve => setTimeout(resolve, 5000));

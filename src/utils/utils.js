@@ -80,7 +80,7 @@ export const fakeUsers = fakeUsernames.map((username, i) => ({
   trust: ["Unknown", "Safe", "Low", "Medium", "High", "Scam"][
     Math.floor(Math.random() * 6)
   ],
-  investigate: Math.floor(Math.random() * 5),
+  investigate: Math.floor(Math.random() * 6),
 }));
 
 export const processScore = (db) => {
@@ -104,3 +104,51 @@ export const processScore = (db) => {
     investigate: user.investigate,
   }));
 };
+
+const sortData = (key) => {
+  let direction = "asc";
+  if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+  }
+  setSortConfig({ key, direction });
+
+  setUsers((prevUsers) => {
+      return [...prevUsers].sort((a, b) => {
+          if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+          if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+          return 0;
+      });
+  });
+};
+
+export const getScoreColor = (score) => {
+  if (score < 33) return "text-orange-500";
+  if (score < 67) return "text-blue-400";
+  return "text-green-500";
+};
+
+export const getTrustColor = (trust) => {
+  if (trust === "Scam") return "text-red-400";
+  if (trust === "High") return "text-orange-400";
+  if (trust === "Medium") return "text-blue-400";
+  if (trust === "Low") return "text-lime-400";
+  if (trust === "Safe") return "text-green-400";
+  if (trust === "Unknown") return "text-gray-400";
+};
+
+export const getAction = (action) => {
+  switch (action) {
+      case 'scrape':
+          return 'scraper';
+      case 'contextualise':
+          return 'context';
+      case 'classify':
+          return 'classifier';
+      case 'extract':
+          return 'extractor';
+      case 'evaluate':
+          return 'evaluator';
+      default:
+          return '';
+  }
+}
