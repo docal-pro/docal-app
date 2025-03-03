@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Dropdown } from '../../utils/Dropdown';
-import { scamClassifiers, callProxy } from '../../../utils/utils';
+import { scamTwitterClassifiers, callProxy } from '../../../utils/utils';
 import { Search } from 'lucide-react';
 
 export const Twitter = () => {
@@ -61,14 +61,14 @@ export const Twitter = () => {
     };
 
     return (
-        <div className='w-full'>
+        <div className='w-full lg:mt-12 md:mt-12'>
             <div className="flex flex-col justify-center items-center my-4 gap-4">
                 <div className="flex items-center space-x-3">
                     <span className={`${mode === 'Tweet' ? "text-gray-600" : "text-blue-600"} text-sm`}>
                         <span className="relative group">
                             <span className="cursor-pointer">
                                 <i className="fa-solid fa-user"></i>
-                                <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-gray-800 rounded-md w-32 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
+                                <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
                                     {'Investigate User'}
                                 </span>
                             </span>
@@ -81,13 +81,13 @@ export const Twitter = () => {
                             onChange={toggleMode}
                             className="sr-only peer"
                         />
-                        <div className="w-12 h-6 bg-blue-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-green-500 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-blue-600 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
+                        <div className="w-12 h-6 bg-blue-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-blue-500 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-blue-600 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
                     </label>
-                    <span className={`${mode === 'Tweeter' ? "text-gray-600" : "text-green-600"} text-sm`}>{" "}
+                    <span className={`${mode === 'Tweeter' ? "text-gray-600" : "text-blue-600"} text-sm`}>{" "}
                         <span className="relative group">
                             <span className="cursor-pointer">
                                 <i className="fa-solid fa-font"></i>
-                                <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-gray-800 rounded-md w-32 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
+                                <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
                                     {'Investigate Tweet'}
                                 </span>
                             </span>
@@ -106,12 +106,12 @@ export const Twitter = () => {
                 <form onSubmit={handleSubmit} className="relative flex flex-col gap-4 ml-8">
                     <div className="relative flex items-center w-full">
                         <div className="max-w-xl mx-auto w-full">
-                            <Dropdown selectedClass={selectedClass} setSelectedClass={setSelectedClass} options={scamClassifiers} />
+                            <Dropdown selectedClass={selectedClass} setSelectedClass={setSelectedClass} options={scamTwitterClassifiers} disabled={false} />
                         </div>
                         <span className="relative group ml-4">
                             <span className="cursor-pointer text-xs lg:text-lg text-gray-500">
                                 &#9432;
-                                <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-gray-800 rounded-md w-72 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
+                                <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-72 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
                                     {`This helps the AI with context about your input`}
                                 </span>
                             </span>
@@ -124,20 +124,20 @@ export const Twitter = () => {
                             onChange={(e) => setInput(e.target.value)}
                             placeholder={mode === 'Tweeter' ? "Enter Twitter/X @" : "Enter Tweet Link"}
                             disabled={!selectedClass}
-                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-green-500 text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-blue-500 text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <button
                             type="button"
                             onClick={handleSearch}
                             disabled={!selectedClass}
-                            className={`px-6 py-3 ${mode === 'Tweet' ? "bg-green-600" : "bg-blue-600"} border ${mode === 'Tweet' ? "border-green-600" : "border-blue-600"} hover:bg-transparent rounded-r-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+                            className={`px-6 py-3 ${mode === 'Tweet' ? "bg-blue-600" : "bg-blue-600"} border ${mode === 'Tweet' ? "border-blue-600" : "border-blue-600"} hover:bg-transparent rounded-r-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
                             <Search className="w-6 h-6" />
                         </button>
                         <span className="relative group ml-4">
                             <span className="cursor-pointer text-xs lg:text-lg text-gray-500">
                                 &#9432;
-                                <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-gray-800 rounded-md w-72 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
+                                <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-72 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
                                     {mode === 'Tweeter'
                                         ? 'Enter the Twitter/X username to investigate'
                                         : 'Enter a tweet link for analysis'}

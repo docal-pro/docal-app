@@ -44,9 +44,10 @@ export const SubmitInfo = () => {
     };
 
     return (
-        <div className='w-full'>
+        <div className='w-full md:mt-12 lg:mt-12'>
             <div className="flex flex-col justify-center items-center my-4 gap-4">
-                <div className="flex items-center space-x-3">
+                <div className="font-ocr flex items-center space-x-3 text-gray-400 text-xl tracking-tight">
+                    {`Not implemented yet!`}
                 </div>
             </div>
 

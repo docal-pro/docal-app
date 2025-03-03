@@ -1,7 +1,7 @@
 import { InvestigateX } from "../components/sidebar/investigate/Twitter";
 
 // Scam Classifiers
-export const scamClassifiers = [
+export const scamTwitterClassifiers = [
   "Promoting a scam",
   "Promoting pump & dump scheme",
   "Promoting a rug pull",
@@ -22,6 +22,30 @@ export const scamClassifiers = [
   "Encouraging FOMO-based investing",
   "Soliciting private keys or seed phrases",
   "Pump group leader/whale manipulation",
+];
+
+export const scamDiscourseClassifiers = [
+  "Sybil Attacks",
+  "Vote Buying",
+  "Proposal Spamming",
+  "Governance Takeover",
+  "Insider Trading",
+  "Collusion",
+  "Low Voter Participation",
+  "Smart Contract Exploits",
+  "Whale Dominance",
+  "Lack of Transparency",
+  "Conflict of Interest",
+  "Fake Proposals",
+  "Inadequate Security Measures",
+  "Regulatory Non-compliance",
+  "Poor Governance Structures",
+  "State Capture",
+  "Self-Dealing",
+  "Unfair Compensation",
+  "Lack of Transparency",
+  "Rogue Governance",
+  "Unauthorised Actions",
 ];
 
 // Fake Users

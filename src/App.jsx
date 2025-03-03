@@ -6,18 +6,13 @@ import { Twitter } from "./components/sidebar/investigate/Twitter";
 import { Discourse } from "./components/sidebar/investigate/Discourse";
 import { Dashboard } from "./components/sidebar/Dashboard";
 import { SubmitInfo } from "./components/sidebar/SubmitInfo";
-import { TinyDropdown } from "./components/utils/TinyDropdown";
-
-const Investigate = () => {
-    return (<></>);
-};
 
 const sections = [
     { name: "dashboard", label: "Dashboard", component: Dashboard },
     {
         name: "investigate",
         label: "Investigate",
-        component: Investigate,
+        component: (props) => <Investigate {...props} />,
         subItems: [
             { name: "twitter", label: "Twitter", component: Twitter },
             { name: "discourse", label: "Discourse", component: Discourse }
@@ -25,6 +20,27 @@ const sections = [
     },
     { name: "submit_info", label: "Submit Information", component: SubmitInfo },
 ];
+
+const Investigate = ({ onSelect }) => {
+    const investigateSection = sections.find(s => s.name === "investigate");
+
+    return (
+        <div className="flex flex-col items-center justify-center w-3/4 text-center font-ocr gap-8 lg:mt-12 md:mt-12">
+            <div className="tracking-tight text-gray-400">{`Please select a platform to continue`}</div>
+            <div className="flex gap-4">
+                {investigateSection?.subItems?.map((subItem) => (
+                    <button
+                        key={subItem.name}
+                        onClick={() => onSelect(`investigate_${subItem.name}`)}
+                        className="px-6 py-3 bg-accent-steel bg-opacity-30 rounded-md hover:bg-opacity-50 transition-all text-blue-300 hover:text-blue-100 tracking-tight"
+                    >
+                        {subItem.label}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+};
 
 const App = () => {
     const [selectedSection, setSelectedSection] = useState("dashboard");
@@ -57,7 +73,7 @@ const App = () => {
                 </h2>
 
                 {/* Mobile Dropdown for Sidebar */}
-                <div className="md:hidden w-full">
+                <div className="lg:hidden w-full">
                     <button
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         className="w-full text-left bg-gray-800 text-gray-300 py-3 px-4 rounded-md flex justify-between items-center"
@@ -94,13 +110,13 @@ const App = () => {
                 {/* Desktop Layout */}
                 <div className="flex w-full max-w-5xl">
                     {/* Sidebar (Hidden on Mobile) */}
-                    <div className="hidden md:block w-1/4">
+                    <div className="hidden lg:block w-1/4">
                         <Sidebar sections={sections} selected={selectedSection} onSelect={setSelectedSection} />
                     </div>
 
                     {/* Main Content */}
-                    <div className="w-full md:w-3/4 flex justify-center">
-                        {SelectedComponent && <SelectedComponent />}
+                    <div className="w-full lg:w-3/4 flex lg:block justify-center">
+                        {SelectedComponent && <SelectedComponent onSelect={setSelectedSection} />}
                     </div>
                 </div>
             </main>

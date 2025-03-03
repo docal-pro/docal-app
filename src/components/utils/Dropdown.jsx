@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-export const Dropdown = ({ selectedClass, setSelectedClass, options }) => {
+export const Dropdown = ({ selectedClass, setSelectedClass, options, disabled }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -20,7 +20,8 @@ export const Dropdown = ({ selectedClass, setSelectedClass, options }) => {
         <div ref={dropdownRef} className="relative w-full">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg flex justify-between items-center text-gray-400 focus:outline-none focus:border-green-500"
+                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg flex justify-between items-center text-gray-400 focus:outline-none focus:border-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={disabled}
             >
                 {selectedClass || "Select Class"}
                 <ChevronDown className="w-5 h-5 text-gray-400" />
