@@ -1,4 +1,6 @@
-import { InvestigateX } from "../components/sidebar/investigate/Twitter";
+import { toast as toastify } from "react-toastify";
+import { BadgeCheck, CircleAlert, BellRing, BellRingIcon } from "lucide-react";
+import "react-toastify/dist/ReactToastify.css";
 
 // Scam Classifiers
 export const scamTwitterClassifiers = [
@@ -49,28 +51,7 @@ export const scamDiscourseClassifiers = [
 ];
 
 // Fake Users
-export const fakeUsernames = [
-  "@crypto_scammer",
-  "@honest_trader",
-  "@shady_dealer",
-  "@blockchain_boss",
-  "@nft_hoarder",
-  "@pump_and_dump",
-  "@wallet_whale",
-  "@rugpull_rick",
-  "@defi_guru",
-  "@moon_maniac",
-  "@airdropped",
-  "@token_flipz",
-  "@eth_evader",
-  "@solana_sniper",
-  "@scam_alert",
-  "@anon_hodler",
-  "@metaverse_mogul",
-  "@binance_bandit",
-  "@whale_watcher",
-  "@dust_attack",
-];
+export const fakeUsernames = ["@fake_user"];
 
 export const fakeUsers = fakeUsernames.map((username, i) => ({
   id: i + 1,
@@ -108,16 +89,16 @@ export const processScore = (db) => {
 const sortData = (key) => {
   let direction = "asc";
   if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
+    direction = "desc";
   }
   setSortConfig({ key, direction });
 
   setUsers((prevUsers) => {
-      return [...prevUsers].sort((a, b) => {
-          if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-          if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-          return 0;
-      });
+    return [...prevUsers].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
   });
 };
 
@@ -138,17 +119,119 @@ export const getTrustColor = (trust) => {
 
 export const getAction = (action) => {
   switch (action) {
-      case 'scrape':
-          return 'scraper';
-      case 'contextualise':
-          return 'context';
-      case 'classify':
-          return 'classifier';
-      case 'extract':
-          return 'extractor';
-      case 'evaluate':
-          return 'evaluator';
-      default:
-          return '';
+    case "scrape":
+      return "scraper";
+    case "index":
+      return "indexer";
+    case "contextualise":
+      return "context";
+    case "classify":
+      return "classifier";
+    case "extract":
+      return "extractor";
+    case "evaluate":
+      return "evaluator";
+    default:
+      return "";
   }
-}
+};
+
+export const getTweetIdFromLink = (link) => {
+  const url = new URL(link);
+  const path = url.pathname;
+  const tweetId = path.split("/").pop();
+  return tweetId;
+};
+
+export const dataColumns = [
+  { key: "username", label: "User" },
+  { key: "score", label: "Score" },
+  { key: "trust", label: "Trust" },
+];
+
+export const actionColumns = ["Investigate", "Share"];
+
+// Base configuration for ToastContainer
+export const toastContainerConfig = {
+  autoClose: 6000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  theme: "dark",
+};
+
+// Custom toast functions with styled notifications
+export const toast = {
+  default: (message) => {
+    toastify(message, {
+      position: "top-right",
+      style: {
+        background: "#111212",
+        color: "rgb(255, 255, 255)",
+        fontFamily: "SF Mono Round",
+        fontSize: "18px",
+        border: "2px solid rgba(255, 255, 255, 0.8)",
+        borderRadius: "8px",
+      },
+      progressStyle: {
+        background: "rgba(255, 255, 255, 0.8)",
+      },
+      icon: <BellRingIcon className="stroke-[rgb(255, 149, 0)]" />,
+    });
+  },
+
+  info: (message) => {
+    toastify(message, {
+      position: "top-right",
+      style: {
+        background: "#111212",
+        color: "rgb(0, 157, 255)",
+        fontFamily: "SF Mono Round",
+        fontSize: "18px",
+        border: "2px solid rgba(0, 157, 255, 0.8)",
+        borderRadius: "8px",
+      },
+      progressStyle: {
+        background: "rgba(0, 157, 255, 0.8)",
+      },
+      icon: <BadgeCheck className="stroke-[rgb(0, 157, 255)]" />,
+    });
+  },
+
+  success: (message) => {
+    toastify(message, {
+      position: "top-right",
+      style: {
+        background: "#111212",
+        color: "#48ff00",
+        fontFamily: "SF Mono Round",
+        fontSize: "18px",
+        border: "2px solid #48ff00c1",
+        borderRadius: "8px",
+      },
+      progressStyle: {
+        background: "#48ff00c1",
+      },
+      icon: <BadgeCheck className="stroke-[#48ff00]" />,
+    });
+  },
+
+  error: (message) => {
+    toastify(message, {
+      position: "top-right",
+      style: {
+        background: "#111212",
+        color: "#ff1500",
+        fontFamily: "SF Mono Round",
+        fontSize: "18px",
+        border: "2px solid #ff1500c1",
+        borderRadius: "8px",
+      },
+      progressStyle: {
+        background: "#ff1500c1",
+      },
+      icon: <CircleAlert className="stroke-[#ff1500]" />,
+    });
+  },
+};

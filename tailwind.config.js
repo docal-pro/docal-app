@@ -6,7 +6,8 @@ export default {
       fontFamily: {
         ocr: ["OCR-A-Std", "monospace"],
         ibm: ["IBM Plex Mono", "monospace"],
-        mono: ["Inter", "serif"],
+        sfmono: ["SF-Mono", "monospace"],
+        mono: ["SF-Mono", "monospace"],
       },
       letterSpacing: {
         tight: "-0.1em",
