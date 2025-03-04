@@ -32,13 +32,10 @@ export const TwitterDashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const data = await callProxy("db", "POST", {
-        type: "twitter",
-      });
-      console.log(data);
+      const data = await callProxy("twitter/db");
       const headers = data.columns;
       const db = data.rows;
-      // Check if db is empty
+      // Check if DB is empty
       if (db.length > 0) {
         const users = sanitise(db);
         setUsers(users);
@@ -74,10 +71,9 @@ export const TwitterDashboard = () => {
   };
 
   const handleInvestigate = async (slug, action, username = null) => {
-    console.error("Temporary disabled");
+    console.error("❌ Temporary disabled");
     return;
-    const data = await callProxy("process", "POST", {
-      type: "twitter",
+    const data = await callProxy("twitter/process", "POST", {
       func: getAction(action),
       user: username,
       data: action === "scrape" ? slug.join(",") : slug,

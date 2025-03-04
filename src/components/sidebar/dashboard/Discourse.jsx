@@ -32,18 +32,19 @@ export const DiscourseDashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const data = await callProxy("db", "POST", {
-        type: "discourse",
-      });
-      console.log(data);
-      const headers = data.columns;
-      const db = data.rows;
-      // Check if db is empty
-      if (db.length > 0) {
+      try { 
+        const data = await callProxy("discourse/db");
+        const headers = data.columns;
+        const db = data.rows;
+        // Check if db is empty
+        if (db.length > 0) {
         const users = sanitise(db);
         setUsers(users);
       } else {
-        setUsers(fakeUsers);
+          setUsers(fakeUsers);
+        }
+      } catch (error) {
+        console.error("❌ Error:", error);
       }
     };
     fetchUsers();
@@ -74,10 +75,9 @@ export const DiscourseDashboard = () => {
   };
 
   const handleInvestigate = async (slug, action, username = null) => {
-    console.error("Temporary disabled");
+    console.error("❌ Temporary disabled");
     return;
-    const data = await callProxy("process", "POST", {
-      type: "discourse",
+    const data = await callProxy("discourse/process", "POST", {
       func: getAction(action),
       user: username,
       data: action === "scrape" ? slug.join(",") : slug,

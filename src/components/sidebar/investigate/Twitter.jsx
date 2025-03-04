@@ -82,13 +82,12 @@ export const Twitter = () => {
     // Post request to process
     try {
       const process = {
-        type: "twitter",
         func: mode === "Tweeter" ? getAction("index") : getAction("scrape"),
         user: mode === "Tweeter" ? input : null,
         data: mode === "Tweeter" ? input : tweetIds.join(","),
         ctxs: selectedClasses.join(","),
       };
-      const result = await callProxy("process", "POST", process);
+      const result = await callProxy("twitter/process", "POST", process);
       console.log(result);
     } catch (error) {
       console.error("❌ Error:", error);
