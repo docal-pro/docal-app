@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 import { Dropdown } from "../../utils/Dropdown";
 import {
   scamTwitterClassifiers,
-  callProxy,
   getTweetIdFromLink,
   getAction,
+  toast,
+  toastContainerConfig,
 } from "../../../utils/utils";
+import { callProxy } from "../../../utils/api";
 import { Search } from "lucide-react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Twitter = () => {
   const [mode, setMode] = useState("Tweeter"); // 'Tweeter' or 'Tweet'
@@ -87,13 +91,18 @@ export const Twitter = () => {
         data: mode === "Tweeter" ? input : tweetIds.join(","),
         ctxs: selectedClasses.join(","),
       };
-      const result = await callProxy("twitter/process", "POST", process);
-      console.log(result);
+      const { status, result } = await callProxy(
+        "twitter/process",
+        "POST",
+        process
+      );
+      if (status === 200) {
+        toast.info("Tweet exists in the database already");
+      }
     } catch (error) {
       console.error("❌ Error:", error);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
     setIsModalOpen(false);
     setSearchAttempted(false);
   };
@@ -224,7 +233,7 @@ export const Twitter = () => {
 
           {/* Tweets display section */}
           {mode === "Tweet" && tweets.length > 0 && (
-            <div className="flex flex-wrap gap-2 -mt-2 w-full">
+            <div className="flex flex-wrap gap-2 -mt-[7.5px] w-full">
               {tweets.map((tweet, index) => (
                 <div
                   key={index}
@@ -261,6 +270,7 @@ export const Twitter = () => {
           </div>
         </div>
       )}
+      <ToastContainer {...toastContainerConfig} />
     </div>
   );
 };

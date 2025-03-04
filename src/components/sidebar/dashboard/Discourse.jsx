@@ -35,11 +35,11 @@ export const DiscourseDashboard = () => {
       setUsers(fakeUsers);
       return;
       try {
-        const data = await callProxy("discourse/db");
-        const headers = data.columns;
-        const db = data.rows;
+        const { status, result } = await callProxy("discourse/db");
+        const headers = result.columns;
+        const db = result.rows;
         // Check if db is empty
-        if (db.length > 0) {
+        if (status === 200 && db.length > 0) {
           const users = sanitise(db);
           setUsers(users);
         } else {
@@ -79,14 +79,14 @@ export const DiscourseDashboard = () => {
   const handleInvestigate = async (slug, action, username = null) => {
     console.error("❌ Temporary disabled");
     return;
-    const data = await callProxy("discourse/process", "POST", {
+    const { status, result } = await callProxy("discourse/process", "POST", {
       func: getAction(action),
       user: username,
       data: action === "scrape" ? slug.join(",") : slug,
       ctxs: action === "classify" ? selectedClasses.join(",") : null,
     });
 
-    if (data.success) {
+    if (status === 200) {
       const updatedUsers = users.map((user) => {
         let blob = action === "scrape" ? username : slug;
         if (user.username === blob) {
@@ -96,7 +96,7 @@ export const DiscourseDashboard = () => {
       });
       setUsers(updatedUsers);
     } else {
-      console.error("❌ Error: " + data.error);
+      console.error("❌ Error: " + result.error);
     }
   };
 

@@ -32,11 +32,11 @@ export const TwitterDashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const data = await callProxy("twitter/db");
-      const headers = data.columns;
-      const db = data.rows;
+      const { status, result } = await callProxy("twitter/db");
+      const headers = result.columns;
+      const db = result.rows;
       // Check if DB is empty
-      if (db.length > 0) {
+      if (status === 200 && db.length > 0) {
         const users = sanitise(db);
         setUsers(users);
       } else {
@@ -73,14 +73,14 @@ export const TwitterDashboard = () => {
   const handleInvestigate = async (slug, action, username = null) => {
     console.error("❌ Temporary disabled");
     return;
-    const data = await callProxy("twitter/process", "POST", {
+    const { status, result } = await callProxy("twitter/process", "POST", {
       func: getAction(action),
       user: username,
       data: action === "scrape" ? slug.join(",") : slug,
       ctxs: action === "classify" ? selectedClasses.join(",") : null,
     });
 
-    if (data.success) {
+    if (status === 200) {
       const updatedUsers = users.map((user) => {
         let blob = action === "scrape" ? username : slug;
         if (user.username === blob) {
@@ -90,7 +90,7 @@ export const TwitterDashboard = () => {
       });
       setUsers(updatedUsers);
     } else {
-      console.error("❌ Error: " + data.error);
+      console.error("❌ Error: " + result.error);
     }
   };
 

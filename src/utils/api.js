@@ -27,5 +27,5 @@ export async function callProxy(method, httpMethod = "GET", data = null) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return await response.json();
+  return { status: response.status, result: await response.json() };
 }
