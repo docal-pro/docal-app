@@ -4,11 +4,20 @@ import { Footer } from "./components/Footer";
 import { Sidebar } from "./components/Sidebar";
 import { Twitter } from "./components/sidebar/investigate/Twitter";
 import { Discourse } from "./components/sidebar/investigate/Discourse";
-import { Dashboard } from "./components/sidebar/Dashboard";
+import { TwitterDashboard } from "./components/sidebar/dashboard/Twitter";
+import { DiscourseDashboard } from "./components/sidebar/dashboard/Discourse";
 import { SubmitInfo } from "./components/sidebar/SubmitInfo";
 
 const sections = [
-  { name: "dashboard", label: "Dashboard", component: Dashboard },
+  { 
+    name: "dashboard", 
+    label: "Dashboard", 
+    component: (props) => <Dashboard {...props} />,
+    subItems: [
+      { name: "twitter", label: "Twitter", component: TwitterDashboard },
+      { name: "discourse", label: "Discourse", component: DiscourseDashboard },
+    ],
+  },
   {
     name: "investigate",
     label: "Investigate",
@@ -20,6 +29,28 @@ const sections = [
   },
   { name: "submit_info", label: "Submit Information", component: SubmitInfo },
 ];
+
+const Dashboard = ({ onSelect }) => {
+  const dashboardSection = sections.find((s) => s.name === "dashboard");
+
+  return (
+    <div className="flex flex-col items-center justify-center w-3/4 text-center font-ocr gap-8 lg:mt-12 md:mt-12">
+      <div className="tracking-tight text-gray-400">{`Please select a dashboard to continue`}</div>
+      <div className="flex gap-4">
+        {dashboardSection?.subItems?.map((subItem) => (
+          <button
+            key={subItem.name}
+            disabled={subItem.name === "discourse"}
+            onClick={() => onSelect(`dashboard_${subItem.name}`)}
+            className="px-6 py-3 bg-accent-steel bg-opacity-30 rounded-md hover:bg-opacity-50 transition-all text-blue-300 hover:text-blue-100 tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {subItem.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const Investigate = ({ onSelect }) => {
   const investigateSection = sections.find((s) => s.name === "investigate");

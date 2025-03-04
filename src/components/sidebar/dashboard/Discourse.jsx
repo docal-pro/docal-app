@@ -11,14 +11,14 @@ import {
   sortData,
   toastContainerConfig,
   toast,
-} from "../../utils/utils";
-import { callProxy } from "../../utils/api";
-import { Input } from "../utils/Input";
-import { Classes } from "../utils/Classes";
+} from "../../../utils/utils";
+import { callProxy } from "../../../utils/api";
+import { Input } from "../../utils/Input";
+import { Classes } from "../../utils/Classes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const Dashboard = () => {
+export const DiscourseDashboard = () => {
   const [users, setUsers] = useState([]);
   const [active, setActive] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
