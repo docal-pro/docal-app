@@ -75,6 +75,7 @@ export const DiscourseDashboard = () => {
     console.error("Temporary disabled");
     return;
     const data = await callProxy("process", "POST", {
+      type: "discourse",
       func: getAction(action),
       user: username,
       data: action === "scrape" ? slug.join(",") : slug,

@@ -82,6 +82,7 @@ export const Twitter = () => {
     // Post request to process
     try {
       const process = {
+        type: "twitter",
         func: mode === "Tweeter" ? getAction("index") : getAction("scrape"),
         user: mode === "Tweeter" ? input : null,
         data: mode === "Tweeter" ? input : tweetIds.join(","),
