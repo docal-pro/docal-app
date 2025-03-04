@@ -97,10 +97,15 @@ export const Twitter = () => {
         process
       );
       if (status === 200) {
-        toast.info("Tweet exists in the database already");
+        if (result.result.includes("Tweets already exist")) {
+          toast.info("Tweets already indexed in database");
+        } else {
+          toast.success("Tweets indexed successfully");
+        }
       }
     } catch (error) {
       console.error("❌ Error:", error);
+      toast.error("Error processing tweet");
     }
 
     setIsModalOpen(false);

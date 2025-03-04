@@ -47,6 +47,7 @@ export const DiscourseDashboard = () => {
         }
       } catch (error) {
         console.error("❌ Error:", error);
+        toast.error("Error fetching users");
       }
     };
     fetchUsers();
@@ -73,11 +74,13 @@ export const DiscourseDashboard = () => {
       setActive(null);
     } catch (error) {
       console.error("❌ Error:", error);
+      toast.error("Error processing tweets");
     }
   };
 
   const handleInvestigate = async (slug, action, username = null) => {
     console.error("❌ Temporary disabled");
+    toast.default("Temporarily disabled");
     return;
     const { status, result } = await callProxy("discourse/process", "POST", {
       func: getAction(action),
@@ -102,6 +105,7 @@ export const DiscourseDashboard = () => {
 
   const handleShare = async (user) => {
     console.error("❌ Not yet implemented");
+    toast.default("Not yet implemented");
   };
 
   return (
@@ -287,6 +291,7 @@ export const DiscourseDashboard = () => {
         onClose={() => setIsClassesOpen(false)}
         onSubmit={handleClassesSubmit}
       />
+      <ToastContainer {...toastContainerConfig} />
     </div>
   );
 };

@@ -173,10 +173,11 @@ export const toast = {
       style: {
         background: "#111212",
         color: "rgb(255, 255, 255)",
-        fontFamily: "SF-Mono",
+        fontFamily: "OCR-A-Std",
         fontSize: "18px",
         border: "2px solid rgba(255, 255, 255, 0.8)",
         borderRadius: "8px",
+        letterSpacing: "-0.075em",
       },
       progressStyle: {
         background: "rgba(255, 255, 255, 0.8)",
@@ -191,10 +192,11 @@ export const toast = {
       style: {
         background: "#111212",
         color: "rgb(0, 157, 255)",
-        fontFamily: "SF-Mono",
+        fontFamily: "OCR-A-Std",
         fontSize: "18px",
         border: "2px solid rgba(0, 157, 255, 0.8)",
         borderRadius: "8px",
+        letterSpacing: "-0.075em",
       },
       progressStyle: {
         background: "rgba(0, 157, 255, 0.8)",
@@ -209,10 +211,11 @@ export const toast = {
       style: {
         background: "#111212",
         color: "#48ff00",
-        fontFamily: "SF-Mono",
+        fontFamily: "OCR-A-Std",
         fontSize: "18px",
         border: "2px solid #48ff00c1",
         borderRadius: "8px",
+        letterSpacing: "-0.075em",
       },
       progressStyle: {
         background: "#48ff00c1",
@@ -227,10 +230,11 @@ export const toast = {
       style: {
         background: "#111212",
         color: "#ff1500",
-        fontFamily: "SF-Mono",
+        fontFamily: "OCR-A-Std",
         fontSize: "18px",
         border: "2px solid #ff1500c1",
         borderRadius: "8px",
+        letterSpacing: "-0.075em",
       },
       progressStyle: {
         background: "#ff1500c1",

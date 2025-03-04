@@ -67,11 +67,13 @@ export const TwitterDashboard = () => {
       setActive(null);
     } catch (error) {
       console.error("❌ Error:", error);
+      toast.error("Error processing tweets");
     }
   };
 
   const handleInvestigate = async (slug, action, username = null) => {
     console.error("❌ Temporary disabled");
+    toast.default("Temporarily disabled");
     return;
     const { status, result } = await callProxy("twitter/process", "POST", {
       func: getAction(action),
@@ -91,11 +93,13 @@ export const TwitterDashboard = () => {
       setUsers(updatedUsers);
     } else {
       console.error("❌ Error: " + result.error);
+      toast.error("Error processing tweets");
     }
   };
 
   const handleShare = async (user) => {
     console.error("❌ Not yet implemented");
+    toast.default("Not yet implemented");
   };
 
   return (
@@ -281,6 +285,7 @@ export const TwitterDashboard = () => {
         onClose={() => setIsClassesOpen(false)}
         onSubmit={handleClassesSubmit}
       />
+      <ToastContainer {...toastContainerConfig} />
     </div>
   );
 };
