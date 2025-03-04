@@ -32,7 +32,9 @@ export const DiscourseDashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const data = await callProxy("db");
+      const data = await callProxy("db", "POST", {
+        type: "discourse",
+      });
       console.log(data);
       const headers = data.columns;
       const db = data.rows;
