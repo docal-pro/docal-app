@@ -9,9 +9,9 @@ import { DiscourseDashboard } from "./components/sidebar/dashboard/Discourse";
 import { SubmitInfo } from "./components/sidebar/SubmitInfo";
 
 const sections = [
-  { 
-    name: "dashboard", 
-    label: "Dashboard", 
+  {
+    name: "dashboard",
+    label: "Dashboard",
     component: (props) => <Dashboard {...props} />,
     subItems: [
       { name: "twitter", label: "Twitter", component: TwitterDashboard },
@@ -40,7 +40,6 @@ const Dashboard = ({ onSelect }) => {
         {dashboardSection?.subItems?.map((subItem) => (
           <button
             key={subItem.name}
-            disabled={subItem.name === "discourse"}
             onClick={() => onSelect(`dashboard_${subItem.name}`)}
             className="px-6 py-3 bg-accent-steel bg-opacity-30 rounded-md hover:bg-opacity-50 transition-all text-blue-300 hover:text-blue-100 tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"
           >

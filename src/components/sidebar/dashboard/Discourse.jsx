@@ -32,15 +32,17 @@ export const DiscourseDashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      try { 
+      setUsers(fakeUsers);
+      return;
+      try {
         const data = await callProxy("discourse/db");
         const headers = data.columns;
         const db = data.rows;
         // Check if db is empty
         if (db.length > 0) {
-        const users = sanitise(db);
-        setUsers(users);
-      } else {
+          const users = sanitise(db);
+          setUsers(users);
+        } else {
           setUsers(fakeUsers);
         }
       } catch (error) {
