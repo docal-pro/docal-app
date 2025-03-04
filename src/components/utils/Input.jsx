@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { getTweetIdFromLink } from "../../utils/utils";
 export const Input = ({ isOpen, onClose, onSubmit, maxTweets = 5 }) => {
   const [input, setInput] = useState("");
   const [tweets, setTweets] = useState([]);
@@ -71,7 +71,7 @@ export const Input = ({ isOpen, onClose, onSubmit, maxTweets = 5 }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-      <div className="bg-gray-900 p-6 rounded-lg w-full max-w-md">
+      <div className="bg-gray-900 p-6 rounded-lg w-full max-w-md lg:max-w-lg">
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div className="flex justify-between items-start">
             <div className="flex flex-col">
@@ -91,16 +91,29 @@ export const Input = ({ isOpen, onClose, onSubmit, maxTweets = 5 }) => {
             </button>
           </div>
 
+          <div className="relative">
+            <input
+              type="text"
+              value={input}
+              onChange={handleInputChange}
+              placeholder="Enter tweet link and press comma to add"
+              className="w-full p-2 bg-gray-800 border border-gray-700 rounded-md text-gray-200 placeholder-gray-500 focus:outline-none focus:border-blue-500 text-sm"
+            />
+            <div className="absolute right-0 -top-2 -translate-y-full text-gray-500 text-sm">
+              ({tweets.length}/{maxTweets})
+            </div>
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          </div>
+
           {tweets.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-2">
+            <div className="flex flex-wrap gap-2 mb-2 -mt-4">
               {tweets.map((tweet, index) => (
                 <div
                   key={index}
-                  className="bg-gray-800 text-accent-steel px-3 py-1 rounded-md flex items-center gap-2 text-sm"
+                  className="max-w-1/5 bg-gray-800 text-accent-steel px-2 py-[4px] md:px-3 md:py-1 rounded-md flex items-center gap-1"
                 >
-                  <span className="max-w-[200px]">
-                    {tweet.slice(0, 20)}
-                    <span className="tracking-word">...</span>
+                  <span className="text-xs lg:text-sm w-full mr-2">
+                    {getTweetIdFromLink(tweet)}
                   </span>
                   <button
                     type="button"
@@ -113,20 +126,6 @@ export const Input = ({ isOpen, onClose, onSubmit, maxTweets = 5 }) => {
               ))}
             </div>
           )}
-
-          <div className="relative">
-            <input
-              type="text"
-              value={input}
-              onChange={handleInputChange}
-              placeholder="Enter tweet link and press comma to add"
-              className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-gray-200 placeholder-gray-500 focus:outline-none focus:border-blue-500 text-sm"
-            />
-            <div className="absolute right-0 -top-2 -translate-y-full text-gray-500 text-sm">
-              ({tweets.length}/{maxTweets})
-            </div>
-            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-          </div>
 
           <div className="flex justify-end gap-2">
             <button

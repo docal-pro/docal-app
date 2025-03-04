@@ -12,7 +12,7 @@ export const Twitter = () => {
   const [mode, setMode] = useState("Tweeter"); // 'Tweeter' or 'Tweet'
   const [input, setInput] = useState("");
   const [tweets, setTweets] = useState([]);
-  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedClasses, setSelectedClasses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
   const [searchAttempted, setSearchAttempted] = useState(false);
@@ -58,38 +58,6 @@ export const Twitter = () => {
     setTweets(tweets.filter((tweet) => tweet !== tweetToRemove));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSearchAttempted(true);
-
-    if (mode === "Tweeter") {
-      if (!validateTwitterUsername(input)) {
-        setError("Please enter a valid username");
-        return;
-      }
-    } else {
-      if (input.trim()) {
-        if (validateTweetLink(input.trim())) {
-          if (!tweets.includes(input.trim())) {
-            setTweets([...tweets, input.trim()]);
-            setInput("");
-          }
-        } else {
-          setError("Please enter a valid tweet link");
-          return;
-        }
-      }
-
-      if (tweets.length === 0) {
-        setError("Please enter at least one tweet");
-        return;
-      }
-    }
-
-    setError("");
-    setIsModalOpen(true);
-  };
-
   const handleSearch = async () => {
     setSearchAttempted(true);
 
@@ -117,6 +85,7 @@ export const Twitter = () => {
         func: mode === "Tweeter" ? getAction("index") : getAction("scrape"),
         user: mode === "Tweeter" ? input : null,
         data: mode === "Tweeter" ? input : tweetIds.join(","),
+        ctxs: selectedClasses.join(","),
       };
       const result = await callProxy("process", "POST", process);
       console.log(result);
@@ -188,19 +157,19 @@ export const Twitter = () => {
 
       <div className="max-w-xl mx-auto h-auto lg:mt-1 mb-16">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(e) => e.preventDefault()}
           className="relative flex flex-col gap-4 ml-8"
         >
-          <div className="relative flex items-center w-full">
+          <div className="relative flex items-start w-full">
             <div className="max-w-xl mx-auto w-full">
               <Dropdown
-                selectedClass={selectedClass}
-                setSelectedClass={setSelectedClass}
+                selectedClasses={selectedClasses}
+                setSelectedClasses={setSelectedClasses}
                 options={scamTwitterClassifiers}
                 disabled={false}
               />
             </div>
-            <span className="relative group ml-4">
+            <span className="relative group ml-4 mt-3">
               <span className="cursor-pointer text-sm lg:text-lg text-gray-500">
                 &#9432;
                 <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-72 -translate-x-full lg:translate-x-0 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block">
@@ -218,15 +187,15 @@ export const Twitter = () => {
               placeholder={
                 mode === "Tweeter"
                   ? "Enter Twitter/X @"
-                  : "Enter comma separated tweets"
+                  : "Enter tweet and press comma to add"
               }
-              disabled={!selectedClass}
+              disabled={!selectedClasses || selectedClasses.length === 0}
               className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-blue-500 text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-gray-500"
             />
             <button
               type="button"
               onClick={handleSearch}
-              disabled={!selectedClass}
+              disabled={!selectedClasses || selectedClasses.length === 0}
               className={`px-6 py-3 ${
                 mode === "Tweet" ? "bg-blue-600" : "bg-blue-600"
               } border ${
@@ -255,15 +224,14 @@ export const Twitter = () => {
 
           {/* Tweets display section */}
           {mode === "Tweet" && tweets.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 -mt-2 w-full">
               {tweets.map((tweet, index) => (
                 <div
                   key={index}
-                  className="bg-gray-800 text-accent-steel px-3 py-1 rounded-md flex items-center gap-2 text-sm"
+                  className="max-w-9/20 bg-gray-800 text-accent-steel px-2 py-[2px] lg:px-3 lg:py-1 rounded-md flex items-center gap-1"
                 >
-                  <span className="max-w-[200px]">
-                    {tweet.slice(0, 20)}
-                    <span className="tracking-word">...</span>
+                  <span className="text-xs lg:text-sm w-full mr-2">
+                    {getTweetIdFromLink(tweet)}
                   </span>
                   <button
                     type="button"

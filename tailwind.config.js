@@ -12,6 +12,7 @@ export default {
       letterSpacing: {
         tight: "-0.1em",
         word: "-0.12em",
+        truncate: "-0.25em",
       },
       colors: {
         dark: "#080808",

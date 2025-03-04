@@ -6,7 +6,7 @@ import { Search } from "lucide-react";
 export const Discourse = () => {
   const [mode, setMode] = useState("Profile"); // 'Profile' or 'Post'
   const [input, setInput] = useState("");
-  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedClasses, setSelectedClasses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
   const [searchAttempted, setSearchAttempted] = useState(false);
@@ -129,8 +129,8 @@ export const Discourse = () => {
           <div className="relative flex items-center w-full">
             <div className="max-w-xl mx-auto w-full">
               <Dropdown
-                selectedClass={selectedClass}
-                setSelectedClass={setSelectedClass}
+                selectedClasses={selectedClasses}
+                setSelectedClasses={setSelectedClasses}
                 options={scamDiscourseClassifiers}
                 disabled={
                   (!forumUrl || !validateForumUrl(forumUrl)) &&
@@ -155,15 +155,15 @@ export const Discourse = () => {
               placeholder={
                 mode === "Profile"
                   ? "Enter Discourse username"
-                  : "Enter comma separated posts"
+                  : "Enter post link and press comma to add"
               }
-              disabled={!selectedClass}
+              disabled={!selectedClasses || selectedClasses.length === 0}
               className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-green-500 text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-gray-500"
             />
             <button
               type="button"
               onClick={handleSearch}
-              disabled={!selectedClass}
+              disabled={!selectedClasses || selectedClasses.length === 0}
               className={`px-6 py-3 ${
                 mode === "Post" ? "bg-green-600" : "bg-green-600"
               } border ${

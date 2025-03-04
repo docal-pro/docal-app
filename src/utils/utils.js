@@ -62,14 +62,16 @@ export const fakeUsers = fakeUsernames.map((username, i) => ({
     Math.floor(Math.random() * 6)
   ],
   investigate: Math.floor(Math.random() * 6),
+  contexts: [],
+  timestamp: null,
 }));
 
-export const processScore = (db) => {
-  return db.map((user, i) => ({
-    id: i + 1,
-    username: user.username,
-    tweet_count: user.tweet_count,
-    score: user.score,
+export const sanitise = (db) => {
+  return db.map((user) => ({
+    id: user.id, // Same as the 'id' in the DB
+    username: user.username, // Same as the 'username' in the DB
+    tweet_count: user.tweet_count, // Same as the 'tweet_count' in the DB
+    score: user.score, // Same as the 'score' in the DB
     trust:
       user.trust === 0
         ? "Unknown"
@@ -82,11 +84,13 @@ export const processScore = (db) => {
         : user.trust === 4
         ? "High"
         : "Scam",
-    investigate: user.investigate,
+    investigate: user.investigate, // Same as the 'investigate' in the DB
+    contexts: user.contexts, // Same as the 'contexts' in the DB
+    timestamp: user.timestamp, // Same as the 'timestamp' in the DB
   }));
 };
 
-const sortData = (key) => {
+export const sortData = (key, sortConfig, setSortConfig, setUsers) => {
   let direction = "asc";
   if (sortConfig.key === key && sortConfig.direction === "asc") {
     direction = "desc";
