@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getTweetIdFromLink } from "../../utils/utils";
+
 export const Input = ({ isOpen, onClose, onSubmit, maxTweets = 5 }) => {
   const [input, setInput] = useState("");
   const [tweets, setTweets] = useState([]);
@@ -65,6 +66,14 @@ export const Input = ({ isOpen, onClose, onSubmit, maxTweets = 5 }) => {
     }
 
     onSubmit(tweets);
+    setTweets([]);
+    setInput("");
+  };
+
+  const handleCancel = () => {
+    setTweets([]);
+    setInput("");
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -130,7 +139,7 @@ export const Input = ({ isOpen, onClose, onSubmit, maxTweets = 5 }) => {
           <div className="flex justify-end gap-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleCancel}
               className="px-4 py-2 bg-gray-800 text-gray-200 rounded hover:bg-gray-700 font-ocr tracking-tight text-sm"
             >
               Cancel

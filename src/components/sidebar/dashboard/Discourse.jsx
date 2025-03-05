@@ -7,7 +7,7 @@ import {
   getTrustColor,
   dataColumns,
   actionColumns,
-  getTweetIdFromLink,
+  getPostIdFromLink,
   sortData,
   toastContainerConfig,
   toast,
@@ -56,25 +56,27 @@ export const DiscourseDashboard = () => {
   const handleClassesSubmit = async (classes) => {
     setSelectedClasses(classes);
     setIsClassesOpen(false);
+    console.error("❌ Not yet implemented");
+    toast.default("Currently unavailable");
   };
 
-  const handleTweetsSubmit = async (links) => {
+  const handlePostsSubmit = async (links) => {
     const username = active;
-    const tweetIds = [];
+    const postIds = [];
     for (const link of links) {
-      const tweetId = getTweetIdFromLink(link);
-      if (tweetId) {
-        tweetIds.push(tweetId);
+      const postId = getPostIdFromLink(link);
+      if (postId) {
+        postIds.push(postId);
       }
     }
     // Post request to process
     try {
-      handleInvestigate(tweetIds, "scrape", username);
+      handleInvestigate(postIds, "scrape", username);
       setIsInputOpen(false);
       setActive(null);
     } catch (error) {
       console.error("❌ Error:", error);
-      toast.error("Error processing tweets");
+      toast.error("Error processing posts");
     }
   };
 
@@ -191,7 +193,7 @@ export const DiscourseDashboard = () => {
                   >
                     <i className="fa-solid fa-file-arrow-down"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
-                      {`Add tweets`}
+                      {`Add posts`}
                     </span>
                   </button>
                   <button
@@ -284,7 +286,7 @@ export const DiscourseDashboard = () => {
       <Input
         isOpen={isInputOpen}
         onClose={() => setIsInputOpen(false)}
-        onSubmit={handleTweetsSubmit}
+        onSubmit={handlePostsSubmit}
       />
       <Classes
         isOpen={isClassesOpen}

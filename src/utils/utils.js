@@ -147,6 +147,13 @@ export const getTweetIdFromLink = (link) => {
   return tweetId;
 };
 
+export const getPostIdFromLink = (link) => {
+  const url = new URL(link);
+  const path = url.pathname;
+  const postId = path.split("/").pop();
+  return postId;
+};
+
 export const dataColumns = [
   { key: "username", label: "User" },
   { key: "score", label: "Score" },

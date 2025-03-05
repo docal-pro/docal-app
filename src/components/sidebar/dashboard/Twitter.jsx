@@ -26,15 +26,18 @@ export const TwitterDashboard = () => {
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [isClassesOpen, setIsClassesOpen] = useState(false);
   const [selectedClasses, setSelectedClasses] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   useEffect(() => {
     const fetchUsers = async () => {
+      setIsModalOpen(true);
       const { status, result } = await callProxy("twitter/db");
       const headers = result.columns;
       const db = result.rows;
+      console.log(result);
       // Check if DB is empty
       if (status === 200 && db.length > 0) {
         const users = sanitise(db);
@@ -42,13 +45,18 @@ export const TwitterDashboard = () => {
       } else {
         setUsers(fakeUsers);
       }
+      setIsModalOpen(false);
     };
     fetchUsers();
   }, []);
 
   const handleClassesSubmit = async (classes) => {
+    setIsModalOpen(true);
     setSelectedClasses(classes);
     setIsClassesOpen(false);
+    console.error("❌ Not yet implemented");
+    toast.default("Currently unavailable");
+    setIsModalOpen(false);
   };
 
   const handleTweetsSubmit = async (links) => {
@@ -72,9 +80,13 @@ export const TwitterDashboard = () => {
   };
 
   const handleInvestigate = async (slug, action, username = null) => {
-    console.error("❌ Temporary disabled");
-    toast.default("Temporarily disabled");
-    return;
+    setIsModalOpen(true);
+    if (action !== "scrape") {
+      console.error("❌ Temporary disabled");
+      toast.default("Temporarily disabled");
+      setIsModalOpen(false);
+      return;
+    }
     const { status, result } = await callProxy("twitter/process", "POST", {
       func: getAction(action),
       user: username,
@@ -83,17 +95,36 @@ export const TwitterDashboard = () => {
     });
 
     if (status === 200) {
-      const updatedUsers = users.map((user) => {
-        let blob = action === "scrape" ? username : slug;
-        if (user.username === blob) {
-          return { ...user, investigate: user.investigate + 1 };
-        }
-        return user;
-      });
-      setUsers(updatedUsers);
+      if (result.result.includes("Tweets already exist")) {
+        toast.info("Tweets already indexed in database");
+      } else if (
+        result.result.includes("No tweets found") &&
+        !result.result.includes("DenyLoginSubtask")
+      ) {
+        toast.error("No tweets found");
+      } else if (result.result.includes("Username mismatch")) {
+        toast.error("Username mismatch");
+      } else if (result.result.includes("Incorrect number of arguments")) {
+        toast.error("Internal server error");
+      } else if (result.result.includes("DenyLoginSubtask")) {
+        toast.error("Twitter firewalled. Try again later!");
+      } else {
+        const updatedUsers = users.map((user) => {
+          let blob = action === "scrape" ? username : slug;
+          if (user.username === blob) {
+            return { ...user, investigate: user.investigate + 1 };
+          }
+          return user;
+        });
+
+        setUsers(updatedUsers);
+        toast.success("Tweets indexed successfully");
+      }
+      setIsModalOpen(false);
     } else {
       console.error("❌ Error: " + result.error);
       toast.error("Error processing tweets");
+      setIsModalOpen(false);
     }
   };
 
@@ -275,9 +306,26 @@ export const TwitterDashboard = () => {
           </tbody>
         </table>
       </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-gray-800 p-8 rounded-lg shadow-xl items-center justify-center flex flex-col">
+            <img
+              src="./assets/logo-light.png"
+              width="100"
+              className="transition-transform logo-rotate-fast items-center"
+              alt="DOCAL Loader"
+            />
+            <p className="text-center mt-4 text-gray-300 font-ocr text-xl tracking-tight">
+              Beep Boop
+            </p>
+          </div>
+        </div>
+      )}
       <Input
         isOpen={isInputOpen}
-        onClose={() => setIsInputOpen(false)}
+        onClose={() => {
+          setIsInputOpen(false);
+        }}
         onSubmit={handleTweetsSubmit}
       />
       <Classes

@@ -8,6 +8,7 @@ export const Classes = ({ isOpen, onClose, onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(selectedClasses);
+    setSelectedClasses([]);
   };
 
   if (!isOpen) return null;
@@ -15,7 +16,6 @@ export const Classes = ({ isOpen, onClose, onSubmit }) => {
   const handleModalClick = (e) => {
     // Only close if clicking the backdrop itself
     if (e.target === e.currentTarget) {
-      onClose();
     }
   };
 
@@ -61,7 +61,10 @@ export const Classes = ({ isOpen, onClose, onSubmit }) => {
           <div className="flex justify-end gap-2 mt-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => {
+                setSelectedClasses([]);
+                onClose();
+              }}
               className="px-4 py-2 bg-gray-800 text-gray-200 rounded hover:bg-gray-700 font-ocr tracking-tight text-sm"
             >
               Cancel
