@@ -100,12 +100,18 @@ export const Twitter = () => {
         if (result.result.includes("Tweets already exist")) {
           toast.info("Tweets already indexed in database");
         } else {
-          toast.success("Tweets indexed successfully");
+          toast.success(
+            mode === "Tweeter"
+              ? "User indexed successfully"
+              : "Tweets indexed successfully"
+          );
         }
       }
     } catch (error) {
       console.error("❌ Error:", error);
-      toast.error("Error processing tweet");
+      toast.error(
+        mode === "Tweeter" ? "Error indexing user" : "Error indexing tweets"
+      );
     }
 
     setIsModalOpen(false);
