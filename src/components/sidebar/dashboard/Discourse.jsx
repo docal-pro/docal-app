@@ -47,7 +47,7 @@ export const DiscourseDashboard = () => {
         }
       } catch (error) {
         console.error("❌ Error:", error);
-        toast.error("Error fetching users");
+        toast.error("Error fetching database");
       }
     };
     fetchUsers();

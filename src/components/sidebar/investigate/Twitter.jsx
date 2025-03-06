@@ -180,7 +180,7 @@ export const Twitter = () => {
           onSubmit={(e) => e.preventDefault()}
           className="relative flex flex-col gap-4 ml-8"
         >
-          <div className="relative flex items-start w-full">
+          <div key={`dropdown-${mode}`} className="relative flex items-start w-full">
             <div className="max-w-xl mx-auto w-full">
               <Dropdown
                 selectedClasses={selectedClasses}
@@ -199,7 +199,7 @@ export const Twitter = () => {
             </span>
           </div>
 
-          <div className="flex items-center">
+          <div key={`input-${mode}`} className="flex items-center">
             <input
               type="text"
               value={input}

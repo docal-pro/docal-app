@@ -34,18 +34,23 @@ export const TwitterDashboard = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       setIsModalOpen(true);
-      const { status, result } = await callProxy("twitter/db");
-      const headers = result.columns;
-      const db = result.rows;
-      console.log(result);
-      // Check if DB is empty
-      if (status === 200 && db.length > 0) {
-        const users = sanitise(db);
-        setUsers(users);
-      } else {
-        setUsers(fakeUsers);
+      try {
+        const { status, result } = await callProxy("twitter/db");
+        const headers = result.columns;
+        const db = result.rows;
+        // Check if DB is empty
+        if (status === 200 && db.length > 0) {
+          const users = sanitise(db);
+          setUsers(users);
+        } else {
+          setUsers(fakeUsers);
+        }
+        setIsModalOpen(false);
+      } catch (error) {
+        console.error("❌ Error:", error);
+        toast.error("Error fetching database");
+        setIsModalOpen(false);
       }
-      setIsModalOpen(false);
     };
     fetchUsers();
   }, []);
