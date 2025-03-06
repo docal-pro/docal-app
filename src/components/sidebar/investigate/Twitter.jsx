@@ -13,7 +13,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Twitter = () => {
-  const [mode, setMode] = useState("Tweeter"); // 'Tweeter' or 'Tweet'
+  const [mode, setMode] = useState("Tweeter"); // Mode'Tweeter' or 'Tweet'
   const [input, setInput] = useState("");
   const [tweets, setTweets] = useState([]);
   const [selectedClasses, setSelectedClasses] = useState([]);
