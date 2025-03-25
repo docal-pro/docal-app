@@ -13,9 +13,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Twitter = () => {
+  const { wallet } = useWallet();
   const [mode, setMode] = useState("Tweeter"); // Mode'Tweeter' or 'Tweet'
   const [input, setInput] = useState("");
-  const [tweets, setTweets] = useState([]);
+  const [caller, setCaller] = useState("");
+  const [transaction, setTransaction] = useState("");
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
@@ -62,8 +64,16 @@ export const Twitter = () => {
     setTweets(tweets.filter((tweet) => tweet !== tweetToRemove));
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async ({ wallet }) => {
     setSearchAttempted(true);
+    const caller = wallet.publicKey.toString();
+    const message = `Requesting signature to index with account ${caller}`;
+    const signatureUint8Array = await wallet.signMessage(
+      new TextEncoder().encode(message)
+    );
+    const signature = btoa(String.fromCharCode(...signatureUint8Array));
+    setCaller(caller);
+    setTransaction(signature);
 
     const tweetIds = [];
     if (mode === "Tweeter") {
@@ -88,8 +98,10 @@ export const Twitter = () => {
       const process = {
         func: mode === "Tweeter" ? getAction("index") : getAction("scrape"),
         user: mode === "Tweeter" ? input : null,
-        data: mode === "Tweeter" ? input : tweetIds.join(","),
+        data: mode === "Tweeter" ? [] : tweetIds.join(","),
         ctxs: selectedClasses.join(","),
+        caller,
+        transaction,
       };
       const { status, result } = await callProxy(
         "twitter/process",
@@ -129,9 +141,8 @@ export const Twitter = () => {
       <div className="flex flex-col justify-center items-center my-4 gap-4">
         <div className="flex items-center space-x-3">
           <span
-            className={`${
-              mode === "Tweet" ? "text-gray-600" : "text-blue-600"
-            } text-sm`}
+            className={`${mode === "Tweet" ? "text-gray-600" : "text-blue-600"
+              } text-sm`}
           >
             <span className="relative group">
               <span className="cursor-pointer">
@@ -152,9 +163,8 @@ export const Twitter = () => {
             <div className="w-12 h-6 bg-blue-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-blue-500 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-blue-600 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
           <span
-            className={`${
-              mode === "Tweeter" ? "text-gray-600" : "text-blue-600"
-            } text-sm`}
+            className={`${mode === "Tweeter" ? "text-gray-600" : "text-blue-600"
+              } text-sm`}
           >
             {" "}
             <span className="relative group">
@@ -214,13 +224,11 @@ export const Twitter = () => {
             />
             <button
               type="button"
-              onClick={handleSearch}
+              onClick={() => handleSearch({ wallet })}
               disabled={!selectedClasses || selectedClasses.length === 0}
-              className={`px-6 py-3 ${
-                mode === "Tweet" ? "bg-blue-600" : "bg-blue-600"
-              } border ${
-                mode === "Tweet" ? "border-blue-600" : "border-blue-600"
-              } hover:bg-transparent rounded-r-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+              className={`px-6 py-3 ${mode === "Tweet" ? "bg-blue-600" : "bg-blue-600"
+                } border ${mode === "Tweet" ? "border-blue-600" : "border-blue-600"
+                } hover:bg-transparent rounded-r-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               <Search className="w-6 h-6" />
             </button>

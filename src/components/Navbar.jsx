@@ -1,10 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown, Github, Twitter } from "lucide-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { Balance } from "./utils/Balance";
 
 export const Navbar = () => {
+  const [trigger, setTrigger] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const dropdownRefs = useRef({});
+
+  useEffect(() => {
+    // Check if the component is mounted to prevent hydration errors
+    // when the wallet button is rendered on the server
+    setIsMounted(true);
+  }, []);
 
   const handleClickOutside = (event) => {
     if (
@@ -56,9 +67,8 @@ export const Navbar = () => {
         </button>
 
         <div
-          className={`${
-            isMobileMenuOpen ? "block" : "hidden"
-          } md:block w-full md:w-auto font-ocr tracking-tight`}
+          className={`${isMobileMenuOpen ? "block" : "hidden"
+            } md:block w-full md:w-auto font-ocr tracking-tight`}
         >
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mt-4 md:mt-0">
             {/* Resources Dropdown */}
@@ -74,9 +84,8 @@ export const Navbar = () => {
                 <ChevronDown size={16} />
               </button>
               <div
-                className={`${
-                  isDropdownOpen("resources") ? "block" : "hidden"
-                } absolute left-0 mt-2 w-48 bg-black rounded-md shadow-lg py-1 z-50`}
+                className={`${isDropdownOpen("resources") ? "block" : "hidden"
+                  } absolute left-0 mt-2 w-48 bg-black rounded-md shadow-lg py-1 z-50`}
               >
                 <a
                   href="https://github.com/docal-pro"
@@ -103,9 +112,8 @@ export const Navbar = () => {
                 <ChevronDown size={16} />
               </button>
               <div
-                className={`${
-                  isDropdownOpen("community") ? "block" : "hidden"
-                } absolute left-0 mt-2 w-48 bg-black rounded-md shadow-lg py-1 z-50`}
+                className={`${isDropdownOpen("community") ? "block" : "hidden"
+                  } absolute left-0 mt-2 w-48 bg-black rounded-md shadow-lg py-1 z-50`}
               >
                 <a
                   href="https://x.com/docal_pro"
@@ -131,9 +139,8 @@ export const Navbar = () => {
                 <ChevronDown size={16} />
               </button>
               <div
-                className={`${
-                  isDropdownOpen("apps") ? "block" : "hidden"
-                } absolute left-0 mt-2 w-48 bg-black rounded-md shadow-lg py-1 z-50`}
+                className={`${isDropdownOpen("apps") ? "block" : "hidden"
+                  } absolute left-0 mt-2 w-48 bg-black rounded-md shadow-lg py-1 z-50`}
               >
                 <a
                   href=""
@@ -143,6 +150,19 @@ export const Navbar = () => {
                 >
                   DOCAL AI
                 </a>
+              </div>
+            </div>
+
+            {/* Wallet Button */}
+            <div className="justify-self-end relative">
+              {/* (Desktop) */}
+              <div className="hidden lg:block">
+                {isMounted && (
+                  <div className="flex flex-row items-center gap-2">
+                    
+                    <WalletMultiButton className="wallet-button" />
+                  </div>
+                )}
               </div>
             </div>
           </div>

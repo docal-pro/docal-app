@@ -15,6 +15,7 @@
 }
 
 @keyframes blink {
+
   0%,
   100% {
     opacity: 1;
@@ -79,10 +80,37 @@ body {
 .scrollbar::-webkit-scrollbar {
   height: 12px;
 }
+
 .scrollbar::-webkit-scrollbar-thumb {
-  background-color: theme("colors.scrollbar"); /* Use Tailwind color */
+  background-color: theme("colors.scrollbar");
+  /* Use Tailwind color */
   border-radius: 2px;
 }
+
 .scrollbar::-webkit-scrollbar-track {
   background: transparent;
+}
+
+.wallet-adapter-dropdown {
+  @apply w-full flex md:w-auto md:block;
+}
+
+button.wallet-adapter-button-trigger {
+  @apply bg-accent-steel/50 rounded-md text-sm w-full justify-center px-4 h-9 font-ocr md:w-auto;
+}
+
+.wallet-adapter-modal-title {
+  @apply font-ocr tracking-word text-xl text-accent-steel;
+}
+
+.wallet-adapter-modal-list .wallet-adapter-button {
+  @apply font-mono text-lg !important;
+}
+
+.wallet-adapter-modal-list-more {
+  @apply font-ocr tracking-word text-sm text-accent-steel;
+}
+
+.wallet-adapter-dropdown-list-item {
+  @apply font-ocr tracking-word text-[15px] text-accent-steel;
 }
