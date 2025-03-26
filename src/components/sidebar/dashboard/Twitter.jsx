@@ -16,9 +16,11 @@ import { callProxy } from "../../../utils/api";
 import { Input } from "../../utils/Input";
 import { Classes } from "../../utils/Classes";
 import { ToastContainer } from "react-toastify";
+import { useWallet } from "@solana/wallet-adapter-react";
 import "react-toastify/dist/ReactToastify.css";
 
 export const TwitterDashboard = () => {
+  const { wallet } = useWallet();
   const [users, setUsers] = useState([]);
   const [active, setActive] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
@@ -30,6 +32,13 @@ export const TwitterDashboard = () => {
   const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  useEffect(() => {
+    if (!wallet) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+  }, [wallet]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -66,6 +75,19 @@ export const TwitterDashboard = () => {
 
   const handleTweetsSubmit = async (links) => {
     const username = active;
+    const caller = wallet.adapter.publicKey.toString();
+    if (!caller) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+    const message = `Requesting signature to index with account ${caller}`;
+    const signatureUint8Array = await wallet.adapter.signMessage(
+      new TextEncoder().encode(message)
+    );
+    const signature = btoa(String.fromCharCode(...signatureUint8Array));
+    setCaller(caller);
+    setTransaction(signature);
+
     const tweetIds = [];
     for (const link of links) {
       const tweetId = getTweetIdFromLink(link);
@@ -97,6 +119,8 @@ export const TwitterDashboard = () => {
       user: username,
       data: action === "scrape" ? slug.join(",") : slug,
       ctxs: action === "classify" ? selectedClasses.join(",") : null,
+      caller,
+      transaction,
     });
 
     if (status === 200) {
@@ -213,11 +237,10 @@ export const TwitterDashboard = () => {
                     onClick={() => {
                       setActive(user.username), setIsInputOpen(true);
                     }}
-                    className={`mx-[2px] px-1 lg:px-2 py-1 ${
-                      user.investigate < 1
-                        ? "bg-white bg-opacity-10"
-                        : "bg-blue-400 bg-opacity-70"
-                    } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 1
+                      ? "bg-white bg-opacity-10"
+                      : "bg-blue-400 bg-opacity-70"
+                      } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
                   >
                     <i className="fa-solid fa-file-arrow-down"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
@@ -228,11 +251,10 @@ export const TwitterDashboard = () => {
                     onClick={() =>
                       handleInvestigate(user.username, "contextualise")
                     }
-                    className={`mx-[2px] px-1 lg:px-2 py-1 ${
-                      user.investigate < 2
-                        ? "bg-white bg-opacity-10"
-                        : "bg-blue-400 bg-opacity-70"
-                    } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 2
+                      ? "bg-white bg-opacity-10"
+                      : "bg-blue-400 bg-opacity-70"
+                      } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
                   >
                     <i className="fa-solid fa-mortar-pestle"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-36 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
@@ -241,11 +263,10 @@ export const TwitterDashboard = () => {
                   </button>
                   <button
                     onClick={() => setIsClassesOpen(true)}
-                    className={`mx-[2px] px-1 lg:px-2 py-1 ${
-                      user.investigate < 4
-                        ? "bg-white bg-opacity-10"
-                        : "bg-blue-400 bg-opacity-70"
-                    } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 4
+                      ? "bg-white bg-opacity-10"
+                      : "bg-blue-400 bg-opacity-70"
+                      } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
                   >
                     <i className="fa-solid fa-object-group"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
@@ -254,11 +275,10 @@ export const TwitterDashboard = () => {
                   </button>
                   <button
                     onClick={() => handleInvestigate(user.username, "classify")}
-                    className={`mx-[2px] px-1 lg:px-2 py-1 ${
-                      user.investigate < 3
-                        ? "bg-white bg-opacity-10"
-                        : "bg-blue-400 bg-opacity-70"
-                    } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 3
+                      ? "bg-white bg-opacity-10"
+                      : "bg-blue-400 bg-opacity-70"
+                      } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
                   >
                     <i className="fa-solid fa-list-check"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
@@ -268,11 +288,10 @@ export const TwitterDashboard = () => {
                   <button
                     hidden
                     onClick={() => handleInvestigate(user.username, "extract")}
-                    className={`mx-[2px] px-1 lg:px-2 py-1 ${
-                      user.investigate < 4
-                        ? "bg-white bg-opacity-10"
-                        : "bg-blue-400 bg-opacity-70"
-                    } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 4
+                      ? "bg-white bg-opacity-10"
+                      : "bg-blue-400 bg-opacity-70"
+                      } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
                   >
                     <i className="fa-solid fa-object-group"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
@@ -282,11 +301,10 @@ export const TwitterDashboard = () => {
                   <button
                     hidden
                     onClick={() => handleInvestigate(user.username, "evaluate")}
-                    className={`mx-[2px] px-1 lg:px-2 py-1 ${
-                      user.investigate < 5
-                        ? "bg-white bg-opacity-10"
-                        : "bg-blue-400 bg-opacity-70"
-                    } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 5
+                      ? "bg-white bg-opacity-10"
+                      : "bg-blue-400 bg-opacity-70"
+                      } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
                   >
                     <i className="fa-solid fa-scale-unbalanced-flip"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-30 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">

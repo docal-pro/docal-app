@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { Sidebar } from "./components/Sidebar";
@@ -7,6 +7,7 @@ import { Discourse } from "./components/sidebar/investigate/Discourse";
 import { TwitterDashboard } from "./components/sidebar/dashboard/Twitter";
 import { DiscourseDashboard } from "./components/sidebar/dashboard/Discourse";
 import { SubmitInfo } from "./components/sidebar/SubmitInfo";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const sections = [
   {
@@ -75,7 +76,8 @@ const Investigate = ({ onSelect }) => {
 const App = () => {
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+  const { wallet } = useWallet();
+  
   const foundSection = sections.find((s) => {
     if (s.name === selectedSection) {
       return true;

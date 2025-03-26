@@ -11,6 +11,7 @@ import { callProxy } from "../../../utils/api";
 import { Search } from "lucide-react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 export const Twitter = () => {
   const { wallet } = useWallet();
@@ -64,11 +65,21 @@ export const Twitter = () => {
     setTweets(tweets.filter((tweet) => tweet !== tweetToRemove));
   };
 
-  const handleSearch = async ({ wallet }) => {
+  const handleSearch = async () => {
     setSearchAttempted(true);
-    const caller = wallet.publicKey.toString();
+
+    if (!wallet) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+
+    const caller = wallet.adapter.publicKey.toString();
+    if (!caller) {
+      toast.error("Please connect your wallet");
+      return;
+    }
     const message = `Requesting signature to index with account ${caller}`;
-    const signatureUint8Array = await wallet.signMessage(
+    const signatureUint8Array = await wallet.adapter.signMessage(
       new TextEncoder().encode(message)
     );
     const signature = btoa(String.fromCharCode(...signatureUint8Array));
@@ -111,6 +122,17 @@ export const Twitter = () => {
       if (status === 200) {
         if (result.result.includes("Tweets already exist")) {
           toast.info("Tweets already indexed in database");
+        } else if (
+          result.result.includes("No tweets found") &&
+          !result.result.includes("DenyLoginSubtask")
+        ) {
+          toast.error("No tweets found");
+        } else if (result.result.includes("Username mismatch")) {
+          toast.error("Username mismatch");
+        } else if (result.result.includes("Incorrect number of arguments")) {
+          toast.error("Internal server error");
+        } else if (result.result.includes("DenyLoginSubtask")) {
+          toast.error("Twitter firewalled. Try again later!");
         } else {
           toast.success(
             mode === "Tweeter"
@@ -224,7 +246,7 @@ export const Twitter = () => {
             />
             <button
               type="button"
-              onClick={() => handleSearch({ wallet })}
+              onClick={handleSearch}
               disabled={!selectedClasses || selectedClasses.length === 0}
               className={`px-6 py-3 ${mode === "Tweet" ? "bg-blue-600" : "bg-blue-600"
                 } border ${mode === "Tweet" ? "border-blue-600" : "border-blue-600"

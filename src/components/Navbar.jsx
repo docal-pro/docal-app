@@ -5,11 +5,19 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { Balance } from "./utils/Balance";
 
 export const Navbar = () => {
+  const { wallet } = useWallet();
   const [trigger, setTrigger] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const dropdownRefs = useRef({});
+
+  // Check if the wallet is connected and log the status
+  useEffect(() => {
+    if (wallet) {
+      console.log(wallet.adapter.publicKey.toString() ? "✅ Wallet connected" : "❌ Wallet not connected");
+    }
+  }, [wallet]);
 
   useEffect(() => {
     // Check if the component is mounted to prevent hydration errors
