@@ -77,7 +77,7 @@ const App = () => {
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { wallet } = useWallet();
-  
+
   const foundSection = sections.find((s) => {
     if (s.name === selectedSection) {
       return true;

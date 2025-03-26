@@ -1,6 +1,6 @@
 import { useState, useEffect, use } from "react";
 import {
-  fakeUsers,
+  defaultUsers,
   sanitise,
   getAction,
   getScoreColor,
@@ -52,7 +52,7 @@ export const TwitterDashboard = () => {
           const users = sanitise(db);
           setUsers(users);
         } else {
-          setUsers(fakeUsers);
+          setUsers(defaultUsers);
         }
         setIsModalOpen(false);
       } catch (error) {

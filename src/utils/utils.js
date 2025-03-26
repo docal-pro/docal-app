@@ -2,6 +2,18 @@ import { toast as toastify } from "react-toastify";
 import { BadgeCheck, CircleAlert, BellRing, BellRingIcon } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
 
+// Default placeholder schedule
+export const defaultSchedule = [
+  {
+    caller: "",
+    username: "@elonmusk",
+    transaction: "0x0000000000000000000000000000000000000000",
+    contexts: ["context1", "context2"],
+    tweet_ids: ["12345678909876543210", "12345678909876543211"],
+    timestamp: null,
+  },
+];
+
 // Scam Classifiers
 export const scamTwitterClassifiers = [
   "Promoting a scam",
@@ -10,8 +22,8 @@ export const scamTwitterClassifiers = [
   "Partnering with scam project",
   "Partnering with scammer",
   "Irresponsible promotion",
-  "Fake giveaways & airdrops",
-  "Fake engagement farming",
+  "default giveaways & airdrops",
+  "default engagement farming",
   "Spreading misinformation",
   "Shilling low-liquidity tokens",
   "Using bot-driven manipulation",
@@ -38,7 +50,7 @@ export const scamDiscourseClassifiers = [
   "Whale Dominance",
   "Lack of Transparency",
   "Conflict of Interest",
-  "Fake Proposals",
+  "default Proposals",
   "Inadequate Security Measures",
   "Regulatory Non-compliance",
   "Poor Governance Structures",
@@ -50,10 +62,10 @@ export const scamDiscourseClassifiers = [
   "Unauthorised Actions",
 ];
 
-// Fake Users
-export const fakeUsernames = ["@fake_user"];
+// default Users
+export const defaultUsernames = ["@default_user"];
 
-export const fakeUsers = fakeUsernames.map((username, i) => ({
+export const defaultUsers = defaultUsernames.map((username, i) => ({
   id: i + 1,
   username,
   tweet_count: Math.floor(Math.random() * 1000),

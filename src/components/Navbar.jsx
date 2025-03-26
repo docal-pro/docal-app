@@ -10,11 +10,12 @@ export const Navbar = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const dropdownRefs = useRef({});
 
   // Check if the wallet is connected and log the status
   useEffect(() => {
-    if (wallet) {
+    if (wallet && wallet.adapter.publicKey) {
       console.log(wallet.adapter.publicKey.toString() ? "✅ Wallet connected" : "❌ Wallet not connected");
     }
   }, [wallet]);
@@ -161,13 +162,22 @@ export const Navbar = () => {
               </div>
             </div>
 
+            {/* Schedule Button */}
+            <button
+              onClick={() => setIsScheduleOpen(!isScheduleOpen)}
+              className={`flex items-center gap-1 text-white hover:bg-accent-steel/20 transition-colors px-4 py-2 rounded-md text-sm ${isScheduleOpen ? "bg-accent-steel/20" : "bg-accent-steel/50"} disabled:opacity-50 disabled:cursor-not-allowed`}
+              disabled={!wallet || !wallet.adapter.publicKey}
+            >
+              Account
+            </button>
+
             {/* Wallet Button */}
             <div className="justify-self-end relative">
               {/* (Desktop) */}
               <div className="hidden lg:block">
                 {isMounted && (
                   <div className="flex flex-row items-center gap-2">
-                    
+                    {isScheduleOpen && <Balance setIsScheduleOpen={setIsScheduleOpen} />}
                     <WalletMultiButton className="wallet-button" />
                   </div>
                 )}
