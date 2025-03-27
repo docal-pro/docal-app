@@ -14,6 +14,7 @@ export const Navbar = ({ setUserSchedule }) => {
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [canSchedule, setCanSchedule] = useState(false);
   const [canUserSchedule, setCanUserSchedule] = useState(false);
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
   const dropdownRefs = useRef({});
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export const Navbar = ({ setUserSchedule }) => {
               setCanUserSchedule(true);
             }
           } else {
-            setCanUserSchedule(false);
+            setCanUserSchedule(true);
           }
         } else {
           throw new Error("❌ Failed to fetch schedule");
@@ -49,15 +50,21 @@ export const Navbar = ({ setUserSchedule }) => {
         toast.error("Error fetching database");
       }
     }
-    if (wallet && wallet.adapter.publicKey) {
+    if (wallet && isWalletConnected) {
       fetchUserSchedule();
     }
-  }, [wallet]);
+  }, [wallet, isWalletConnected]);
 
   // Check if the wallet is connected and log the status
   useEffect(() => {
-    if (wallet && wallet.adapter.publicKey) {
-      console.log(wallet.adapter.publicKey.toString() ? "✅ Wallet connected" : "❌ Wallet not connected");
+    if (wallet) {
+      if (wallet.adapter.publicKey) {
+        setIsWalletConnected(true);
+        console.log("✅ Wallet connected");
+      } else {
+        setIsWalletConnected(false);
+        console.log("❌ Wallet not connected");
+      }
     }
   }, [wallet]);
 
@@ -210,7 +217,7 @@ export const Navbar = ({ setUserSchedule }) => {
                 className={`relative flex items-center gap-1 text-white hover:bg-accent-steel/20 transition-colors px-4 py-2 rounded-md text-sm ${isScheduleOpen ? "bg-accent-steel/20" : "bg-accent-steel/50"} disabled:opacity-50 disabled:cursor-not-allowed`}
                 disabled={!wallet || !wallet.adapter.publicKey}
               >
-                {!canUserSchedule && <span className="absolute -top-1 -right-1 text-red-500 animate-pulse">⚠️</span>}
+                {!canUserSchedule && isWalletConnected && <span className="absolute -top-1 -right-1 text-red-500 animate-pulse">⚠️</span>}
                 Account
               </button>
               {/* Wallet Button */}
