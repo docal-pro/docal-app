@@ -209,6 +209,7 @@ export const Twitter = () => {
 
       <div className="max-w-xl mx-auto h-auto lg:mt-1 mb-16">
         <form
+          key={`form-${mode}`}
           onSubmit={(e) => e.preventDefault()}
           className="relative flex flex-col gap-4 ml-8"
         >

@@ -89,8 +89,13 @@ export const Balance = ({ setIsScheduleOpen }) => {
               ...row,
               caller: wallet.adapter.publicKey.toString()
             }))
-            setEmptySchedule(false);
-            setSchedule(userSchedule);
+            if (userSchedule.tweet_ids.length > 0 || userSchedule.username !== "@") {
+              setEmptySchedule(false);
+              setSchedule(userSchedule);
+            } else {
+              setEmptySchedule(true);
+              setSchedule(defaultSchedule);
+            }
           } else {
             setEmptySchedule(true);
             setSchedule(defaultSchedule);
@@ -116,7 +121,7 @@ export const Balance = ({ setIsScheduleOpen }) => {
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
       <div className="bg-gray-900 p-6 rounded-lg w-full max-w-md lg:max-w-lg">
         <div className="modal-content">
-          <h2 className="text-xl font-bold text-white mb-4">Your Account</h2>
+          <h2 className="text-xl font-bold text-accent-steel mb-4">Your Account</h2>
           {!emptySchedule && (
             <div>
               <div className="flex items-center space-x-2 flex-row mb-4">
@@ -129,7 +134,7 @@ export const Balance = ({ setIsScheduleOpen }) => {
                 <div key={index}>
                   {Object.entries(item).map(([key, value]) => (
                     <MetadataItem
-                      key={index}
+                      key={`${index}-${key}`}
                       label={key}
                       value={emptySchedule ? "" : value}
                       tooltip={key === "timestamp" ? "Submission time of the scheduled post" : key === "caller" ? "Wallet address of the caller" : key === "transaction" ? "Transaction hash of the scheduled post" : key === "username" ? "Username of the target account" : key === "tweet_ids" ? "Number of tweets in the batch" : key === "contexts" ? "Number of contexts (blames) in the batch" : key}
