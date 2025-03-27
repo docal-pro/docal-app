@@ -69,7 +69,7 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
     setSelectedClasses(classes);
     setIsClassesOpen(false);
     console.error("❌ Not yet implemented");
-    toast.default("Currently unavailable");
+    toast.default("Not yet implemented");
     setIsModalOpen(false);
   };
 
@@ -107,8 +107,8 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
   const handleInvestigate = async (slug, action, username = null, caller = null, transaction = null) => {
     setIsModalOpen(true);
     if (action !== "scrape") {
-      console.error("❌ Temporary disabled");
-      toast.default("Temporarily disabled");
+      console.error("❌ Not yet implemented");
+      toast.default("Not yet implemented");
       setIsModalOpen(false);
       return;
     }
