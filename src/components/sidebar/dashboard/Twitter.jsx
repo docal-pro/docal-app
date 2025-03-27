@@ -124,17 +124,23 @@ export const TwitterDashboard = ({ userSchedule }) => {
     if (status === 200) {
       if (result.result.includes("Tweets already exist")) {
         toast.info("Tweets already indexed in database");
-      } else if (
-        result.result.includes("No tweets found") &&
-        !result.result.includes("DenyLoginSubtask")
-      ) {
-        toast.error("No tweets found");
+      } else if (result.result.includes("has already been indexed")) {
+        toast.default("User already indexed in database");
+      } else if (result.result.includes("No tweets found")) {
+        toast.info("No tweets found. User indexed");
       } else if (result.result.includes("Username mismatch")) {
         toast.error("Username mismatch");
       } else if (result.result.includes("Incorrect number of arguments")) {
         toast.error("Internal server error");
       } else if (result.result.includes("DenyLoginSubtask")) {
         toast.error("Twitter firewalled. Try again later!");
+      } else if (result.result.includes("tweets saved to")) {
+        const successRate = result.result.split("(")[1].split(")")[0].split("/");
+        if (successRate[0] === successRate[1]) {
+          toast.success("All tweets indexed successfully");
+        } else {
+          toast.success(`Some tweets indexed successfully. Duplicates ignored.`);
+        }
       } else {
         const updatedUsers = users.map((user) => {
           let blob = action === "scrape" ? username : slug;
