@@ -130,7 +130,9 @@ export const Twitter = ({ userSchedule, setOutcome }) => {
           toast.error("Internal server error");
         } else if (result.result.includes("DenyLoginSubtask")) {
           toast.error("Twitter firewalled. Try again later!");
-          setOutcome(false);
+          setTimeout(() => {
+            setOutcome(false);
+          }, 3000);
         } else if (result.result.includes("tweets saved to")) {
           const successRate = result.result.split("(")[1].split(")")[0].split("/");
           if (successRate[0] === successRate[1]) {
