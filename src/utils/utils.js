@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { toast as toastify } from "react-toastify";
 import { BadgeCheck, CircleAlert, BellRing, BellRingIcon } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
@@ -5,12 +6,12 @@ import "react-toastify/dist/ReactToastify.css";
 // Default placeholder schedule
 export const defaultSchedule = [
   {
-    caller: "",
+    caller: "0x0000000000000000000000000000000000000000",
     username: "@elonmusk",
     transaction: "0x0000000000000000000000000000000000000000",
     contexts: ["context1", "context2"],
-    tweet_ids: ["12345678909876543210", "12345678909876543211"],
-    timestamp: null,
+    tweet_ids: ["12345678909876543210", "12345678909876543211", "12345678909876543212", "12345678909876543213"],
+    timestamp: "2025-03-27 00:00:00.000000+00:00",
   },
 ];
 
@@ -88,14 +89,14 @@ export const sanitise = (db) => {
       user.trust === 0
         ? "Unknown"
         : user.trust === 1
-        ? "Safe"
-        : user.trust === 2
-        ? "Low"
-        : user.trust === 3
-        ? "Medium"
-        : user.trust === 4
-        ? "High"
-        : "Scam",
+          ? "Safe"
+          : user.trust === 2
+            ? "Low"
+            : user.trust === 3
+              ? "Medium"
+              : user.trust === 4
+                ? "High"
+                : "Scam",
     investigate: user.investigate, // Same as the 'investigate' in the DB
     contexts: user.contexts, // Same as the 'contexts' in the DB
     timestamp: user.timestamp, // Same as the 'timestamp' in the DB
@@ -261,4 +262,34 @@ export const toast = {
       icon: <CircleAlert className="stroke-[#ff1500]" />,
     });
   },
+};
+
+export const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return isMobile;
+};
+
+export const useIsTablet = () => {
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsTablet(window.innerWidth <= 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return isTablet;
 };

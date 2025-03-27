@@ -49,7 +49,7 @@ export const Navbar = () => {
   return (
     <nav className="w-full p-4 bg-black bg-opacity-75 border-b border-gray-700">
       <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mb-5 xs:mb-0 lg:mb-0 xl:mb-0">
           <img
             src="./assets/logo-light.png"
             width="80"
@@ -162,27 +162,23 @@ export const Navbar = () => {
               </div>
             </div>
 
-            {/* Schedule Button */}
-            <button
-              onClick={() => setIsScheduleOpen(!isScheduleOpen)}
-              className={`flex items-center gap-1 text-white hover:bg-accent-steel/20 transition-colors px-4 py-2 rounded-md text-sm ${isScheduleOpen ? "bg-accent-steel/20" : "bg-accent-steel/50"} disabled:opacity-50 disabled:cursor-not-allowed`}
-              disabled={!wallet || !wallet.adapter.publicKey}
-            >
-              Account
-            </button>
-
-            {/* Wallet Button */}
-            <div className="justify-self-end relative">
-              {/* (Desktop) */}
-              <div className="hidden lg:block">
+            <div className="flex flex-row items-center gap-4">
+              {/* Schedule Button */}
+              <button
+                onClick={() => setIsScheduleOpen(!isScheduleOpen)}
+                className={`flex items-center gap-1 text-white hover:bg-accent-steel/20 transition-colors px-4 py-2 rounded-md text-sm ${isScheduleOpen ? "bg-accent-steel/20" : "bg-accent-steel/50"} disabled:opacity-50 disabled:cursor-not-allowed`}
+                disabled={!wallet || !wallet.adapter.publicKey}
+              >
+                Account
+              </button>
+              {/* Wallet Button */}
+              <div className="justify-self-end relative">
                 {isMounted && (
-                  <div className="flex flex-row items-center gap-2">
-                    {isScheduleOpen && <Balance setIsScheduleOpen={setIsScheduleOpen} />}
-                    <WalletMultiButton className="wallet-button" />
-                  </div>
+                  <WalletMultiButton className="wallet-button" />
                 )}
               </div>
             </div>
+            {isScheduleOpen && <Balance setIsScheduleOpen={setIsScheduleOpen} />}
           </div>
         </div>
       </div>
