@@ -3,7 +3,7 @@ import { Dropdown } from "../../utils/Dropdown";
 import { scamDiscourseClassifiers, callProxy } from "../../../utils/utils";
 import { Search } from "lucide-react";
 
-export const Discourse = () => {
+export const Discourse = ({ userSchedule, setOutcome }) => {
   const [mode, setMode] = useState("Profile"); // 'Profile' or 'Post'
   const [input, setInput] = useState("");
   const [selectedClasses, setSelectedClasses] = useState([]);

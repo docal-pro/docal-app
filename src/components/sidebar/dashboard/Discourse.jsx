@@ -18,7 +18,7 @@ import { Classes } from "../../utils/Classes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const DiscourseDashboard = () => {
+export const DiscourseDashboard = ({ userSchedule, setOutcome }) => {
   const [users, setUsers] = useState([]);
   const [active, setActive] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });

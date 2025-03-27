@@ -31,7 +31,7 @@ const sections = [
   { name: "submit_info", label: "Submit Information", component: SubmitInfo },
 ];
 
-const Dashboard = ({ onSelect, userSchedule }) => {
+const Dashboard = ({ onSelect, userSchedule, setOutcome }) => {
   const dashboardSection = sections.find((s) => s.name === "dashboard");
 
   return (
@@ -53,7 +53,7 @@ const Dashboard = ({ onSelect, userSchedule }) => {
   );
 };
 
-const Investigate = ({ onSelect, userSchedule }) => {
+const Investigate = ({ onSelect, userSchedule, setOutcome }) => {
   const investigateSection = sections.find((s) => s.name === "investigate");
 
   return (
@@ -78,6 +78,7 @@ const App = () => {
   const [userSchedule, setUserSchedule] = useState(false);
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [outcome, setOutcome] = useState(true);
   const { wallet } = useWallet();
 
   const foundSection = sections.find((s) => {
@@ -99,12 +100,18 @@ const App = () => {
     )?.component || sections.find((s) => s.name === selectedSection)?.component;
 
   const SelectedComponentWithProps = (props) => (
-    <SelectedComponent {...props} userSchedule={userSchedule} />
+    <SelectedComponent {...props} userSchedule={userSchedule} setOutcome={setOutcome} />
   );
+
+  useEffect(() => {
+    if (!outcome) {
+      setUserSchedule(false);
+    }
+  }, [outcome]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
-      <div key={wallet?.adapter?.publicKey?.toString()}>
+      <div key={wallet?.adapter?.publicKey?.toString() + outcome.toString()}>
         <Navbar setUserSchedule={setUserSchedule} />
       </div>
 

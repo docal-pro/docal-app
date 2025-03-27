@@ -13,7 +13,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useWallet } from "@solana/wallet-adapter-react";
 
-export const Twitter = ({ userSchedule }) => {
+export const Twitter = ({ userSchedule, setOutcome }) => {
   const { wallet } = useWallet();
   const [tweets, setTweets] = useState([]);
   const [mode, setMode] = useState("Tweeter"); // Mode'Tweeter' or 'Tweet'
@@ -130,6 +130,7 @@ export const Twitter = ({ userSchedule }) => {
           toast.error("Internal server error");
         } else if (result.result.includes("DenyLoginSubtask")) {
           toast.error("Twitter firewalled. Try again later!");
+          setOutcome(false);
         } else if (result.result.includes("tweets saved to")) {
           const successRate = result.result.split("(")[1].split(")")[0].split("/");
           if (successRate[0] === successRate[1]) {
