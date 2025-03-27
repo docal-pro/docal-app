@@ -19,7 +19,7 @@ import { ToastContainer } from "react-toastify";
 import { useWallet } from "@solana/wallet-adapter-react";
 import "react-toastify/dist/ReactToastify.css";
 
-export const TwitterDashboard = () => {
+export const TwitterDashboard = ({ userSchedule }) => {
   const { wallet } = useWallet();
   const [users, setUsers] = useState([]);
   const [active, setActive] = useState(null);
@@ -209,8 +209,8 @@ export const TwitterDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map((user) => (
-              <tr key={user.id} className="odd:bg-gray-900 even:bg-gray-800">
+            {filteredUsers.map((user, index) => (
+              <tr key={index} className="odd:bg-gray-900 even:bg-gray-800">
                 <td className="lg:px-4 px-1 pl-2 py-0 lg:py-2 border border-gray-700 text-accent-steel">
                   {user.username}
                 </td>
@@ -241,6 +241,7 @@ export const TwitterDashboard = () => {
                       ? "bg-white bg-opacity-10"
                       : "bg-blue-400 bg-opacity-70"
                       } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    disabled={userSchedule}
                   >
                     <i className="fa-solid fa-file-arrow-down"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
@@ -255,6 +256,7 @@ export const TwitterDashboard = () => {
                       ? "bg-white bg-opacity-10"
                       : "bg-blue-400 bg-opacity-70"
                       } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    disabled={userSchedule}
                   >
                     <i className="fa-solid fa-mortar-pestle"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-36 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
@@ -267,6 +269,7 @@ export const TwitterDashboard = () => {
                       ? "bg-white bg-opacity-10"
                       : "bg-blue-400 bg-opacity-70"
                       } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    disabled={userSchedule}
                   >
                     <i className="fa-solid fa-object-group"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
@@ -279,6 +282,7 @@ export const TwitterDashboard = () => {
                       ? "bg-white bg-opacity-10"
                       : "bg-blue-400 bg-opacity-70"
                       } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    disabled={userSchedule}
                   >
                     <i className="fa-solid fa-list-check"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
@@ -292,6 +296,7 @@ export const TwitterDashboard = () => {
                       ? "bg-white bg-opacity-10"
                       : "bg-blue-400 bg-opacity-70"
                       } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    disabled={userSchedule}
                   >
                     <i className="fa-solid fa-object-group"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
@@ -305,6 +310,7 @@ export const TwitterDashboard = () => {
                       ? "bg-white bg-opacity-10"
                       : "bg-blue-400 bg-opacity-70"
                       } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
+                    disabled={userSchedule}
                   >
                     <i className="fa-solid fa-scale-unbalanced-flip"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-30 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">

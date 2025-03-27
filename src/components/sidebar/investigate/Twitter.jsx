@@ -13,12 +13,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useWallet } from "@solana/wallet-adapter-react";
 
-export const Twitter = () => {
+export const Twitter = ({ userSchedule }) => {
   const { wallet } = useWallet();
+  const [tweets, setTweets] = useState([]);
   const [mode, setMode] = useState("Tweeter"); // Mode'Tweeter' or 'Tweet'
   const [input, setInput] = useState("");
-  const [caller, setCaller] = useState("");
-  const [transaction, setTransaction] = useState("");
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
@@ -82,9 +81,7 @@ export const Twitter = () => {
     const signatureUint8Array = await wallet.adapter.signMessage(
       new TextEncoder().encode(message)
     );
-    const signature = btoa(String.fromCharCode(...signatureUint8Array));
-    setCaller(caller);
-    setTransaction(signature);
+    const transaction = btoa(String.fromCharCode(...signatureUint8Array));
 
     const tweetIds = [];
     if (mode === "Tweeter") {
@@ -119,20 +116,27 @@ export const Twitter = () => {
         "POST",
         process
       );
+
       if (status === 200) {
         if (result.result.includes("Tweets already exist")) {
           toast.info("Tweets already indexed in database");
-        } else if (
-          result.result.includes("No tweets found") &&
-          !result.result.includes("DenyLoginSubtask")
-        ) {
-          toast.error("No tweets found");
+        } else if (result.result.includes("has already been indexed")) {
+          toast.default("User already indexed in database");
+        } else if (result.result.includes("No tweets found")) {
+          toast.info("No tweets found. User indexed");
         } else if (result.result.includes("Username mismatch")) {
           toast.error("Username mismatch");
         } else if (result.result.includes("Incorrect number of arguments")) {
           toast.error("Internal server error");
         } else if (result.result.includes("DenyLoginSubtask")) {
           toast.error("Twitter firewalled. Try again later!");
+        } else if (result.result.includes("tweets saved to")) {
+          const successRate = result.result.split("(")[1].split(")")[0].split("/");
+          if (successRate[0] === successRate[1]) {
+            toast.success("All tweets indexed successfully");
+          } else {
+            toast.success(`Some tweets indexed successfully. Duplicates ignored.`);
+          }
         } else {
           toast.success(
             mode === "Tweeter"
@@ -248,7 +252,7 @@ export const Twitter = () => {
             <button
               type="button"
               onClick={handleSearch}
-              disabled={!selectedClasses || selectedClasses.length === 0}
+              disabled={!selectedClasses || selectedClasses.length === 0 || userSchedule}
               className={`px-6 py-3 ${mode === "Tweet" ? "bg-blue-600" : "bg-blue-600"
                 } border ${mode === "Tweet" ? "border-blue-600" : "border-blue-600"
                 } hover:bg-transparent rounded-r-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}

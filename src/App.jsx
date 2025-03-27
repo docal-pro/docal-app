@@ -31,7 +31,7 @@ const sections = [
   { name: "submit_info", label: "Submit Information", component: SubmitInfo },
 ];
 
-const Dashboard = ({ onSelect }) => {
+const Dashboard = ({ onSelect, userSchedule }) => {
   const dashboardSection = sections.find((s) => s.name === "dashboard");
 
   return (
@@ -43,6 +43,7 @@ const Dashboard = ({ onSelect }) => {
             key={subItem.name}
             onClick={() => onSelect(`dashboard_${subItem.name}`)}
             className="px-6 py-3 bg-accent-steel bg-opacity-30 rounded-md hover:bg-opacity-50 transition-all text-blue-300 hover:text-blue-100 tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={subItem.name === "discourse"}
           >
             {subItem.label}
           </button>
@@ -52,7 +53,7 @@ const Dashboard = ({ onSelect }) => {
   );
 };
 
-const Investigate = ({ onSelect }) => {
+const Investigate = ({ onSelect, userSchedule }) => {
   const investigateSection = sections.find((s) => s.name === "investigate");
 
   return (
@@ -74,6 +75,7 @@ const Investigate = ({ onSelect }) => {
 };
 
 const App = () => {
+  const [userSchedule, setUserSchedule] = useState(false);
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { wallet } = useWallet();
@@ -96,9 +98,13 @@ const App = () => {
       (sub) => `${foundSection.name}_${sub.name}` === selectedSection
     )?.component || sections.find((s) => s.name === selectedSection)?.component;
 
+  const SelectedComponentWithProps = (props) => (
+    <SelectedComponent {...props} userSchedule={userSchedule} />
+  );
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
-      <Navbar />
+      <Navbar setUserSchedule={setUserSchedule} />
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center px-6 pt-16 pb-12 bg-black bg-opacity-25 w-full gap-8">
@@ -141,10 +147,12 @@ const App = () => {
                       <li
                         key={`${section.name}-${subItem.name}`}
                         onClick={() => {
-                          setSelectedSection(`${section.name}_${subItem.name}`);
-                          setIsDropdownOpen(false);
+                          if (subItem.name !== "discourse") {
+                            setSelectedSection(`${section.name}_${subItem.name}`);
+                            setIsDropdownOpen(false);
+                          }
                         }}
-                        className="px-8 py-2 hover:bg-accent-steel hover:bg-opacity-30 cursor-pointer text-sm"
+                        className={`px-8 py-2 hover:bg-accent-steel hover:bg-opacity-30 cursor-pointer text-sm ${subItem.name === "discourse" ? "cursor-not-allowed" : ""}`}
                       >
                         {subItem.label}
                       </li>
@@ -169,7 +177,7 @@ const App = () => {
           {/* Main Content */}
           <div className="w-full lg:w-3/4 flex lg:block justify-center">
             {SelectedComponent && (
-              <SelectedComponent onSelect={setSelectedSection} />
+              <SelectedComponentWithProps onSelect={setSelectedSection} />
             )}
           </div>
         </div>

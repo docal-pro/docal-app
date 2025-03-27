@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { toast } from "react-toastify";
 import { CheckCircle, CircleCheck, XCircle, CircleAlert } from "lucide-react";
-import { defaultSchedule, useIsMobile, useIsTablet } from "../../utils/utils";
+import { toast, toastContainerConfig, defaultSchedule, useIsMobile, useIsTablet } from "../../utils/utils";
+import { ToastContainer } from "react-toastify";
 import { callProxy } from "../../utils/api";
 
-export const Balance = ({ setIsScheduleOpen }) => {
+export const Balance = ({ setIsScheduleOpen, setCanSchedule }) => {
   const { wallet, connected } = useWallet();
   const [schedule, setSchedule] = useState([]);
   const [emptySchedule, setEmptySchedule] = useState(true);
@@ -13,6 +13,12 @@ export const Balance = ({ setIsScheduleOpen }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isMobile = useIsMobile();
   const isTablet = useIsTablet();
+
+  useEffect(() => {
+    if (emptySchedule) {
+      setCanSchedule(true);
+    }
+  }, [emptySchedule]);
 
   const helpText = (timeLeft) => {
     const timeLeftInSeconds = Math.floor(timeLeft / 1000);
@@ -43,12 +49,12 @@ export const Balance = ({ setIsScheduleOpen }) => {
       </div>
       <div className="flex items-center space-x-1">
         {Array.isArray(value) ? (
-          <div className="px-2 py-1 bg-black bg-opacity-60 rounded text-gray-200 text-xs font-mono hover:bg-opacity-100 transition-colors text-left tracking-normal">
+          <div className={`px-2 py-1 bg-black bg-opacity-60 rounded text-xs font-mono hover:bg-opacity-100 transition-colors text-left tracking-normal ${value.length > 0 ? "text-red-400" : "text-gray-200"}`}>
             {value.length}
           </div>
         ) :
-          <div className="px-2 py-1 bg-black bg-opacity-60 rounded text-gray-200 text-xs font-mono hover:bg-opacity-100 transition-colors text-left tracking-normal">
-            {(isMobile || isTablet) && ["caller", "transaction"].includes(label) ? value.slice(0, 12) + "..." + value.slice(-10) : label === "timestamp" ? new Date(value.replace(" ", "T").split("+")[0] + "Z").toLocaleString("en-GB", {
+          <div className={`px-2 py-1 bg-black bg-opacity-60 rounded text-gray-200 text-xs font-mono hover:bg-opacity-100 transition-colors text-left tracking-normal ${label === "username" && value !== "@" ? "text-red-400" : "text-gray-200"}`}>
+            {(true) && ["caller", "transaction"].includes(label) ? value.slice(0, 13) + "..." + value.slice(-11) : label === "timestamp" ? new Date(value).toLocaleString("en-US", {
               year: "numeric",
               month: "short",
               day: "numeric",
@@ -89,7 +95,7 @@ export const Balance = ({ setIsScheduleOpen }) => {
               ...row,
               caller: wallet.adapter.publicKey.toString()
             }))
-            if (userSchedule.tweet_ids.length > 0 || userSchedule.username !== "@") {
+            if (userSchedule.tweet_ids?.length > 0 || userSchedule.username !== "@") {
               setEmptySchedule(false);
               setSchedule(userSchedule);
             } else {
@@ -143,7 +149,7 @@ export const Balance = ({ setIsScheduleOpen }) => {
                 </div>
               ))}
               <div className="text-gray-400 text-xs font-mono tracking-normal mt-2 mb-2">
-                {helpText(24 * 60 * 60 * 1000 - (new Date() - new Date(schedule[0].timestamp.replace(" ", "T").split("+")[0] + "Z")))}
+                {helpText(24 * 60 * 60 * 1000 - (new Date() - new Date(schedule[0].timestamp)))}
               </div>
             </div>
           )}
@@ -170,7 +176,7 @@ export const Balance = ({ setIsScheduleOpen }) => {
             </button>
             <button
               onClick={() => setIsScheduleOpen(false)}
-              className="mt-4 px-3 py-2 bg-accent-primary text-white rounded-md hover:bg-accent-primary/50 transition text-sm"
+              className="mt-4 px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-600/50 transition text-sm"
             >
               Close
             </button>
@@ -193,6 +199,8 @@ export const Balance = ({ setIsScheduleOpen }) => {
           </div>
         </div>
       )}
+
+      <ToastContainer {...toastContainerConfig} />
     </div>
   );
 };

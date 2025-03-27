@@ -36,11 +36,12 @@ export const Sidebar = ({ sections, onSelect, selected }) => {
                       onClick={() =>
                         onSelect(`${section.name}_${subItem.name}`)
                       }
-                      className={`w-full px-4 py-2 text-left rounded-md transition ${
+                      className={`w-full px-4 py-2 text-left rounded-md transition disabled:cursor-not-allowed ${
                         selected === `${section.name}_${subItem.name}`
                           ? "bg-accent-steel bg-opacity-30 text-blue-300"
                           : "text-gray-400 hover:bg-gray-700"
                       }`}
+                      disabled={subItem.name === "discourse"}
                     >
                       {subItem.label}
                     </button>

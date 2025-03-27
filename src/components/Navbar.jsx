@@ -3,15 +3,56 @@ import { Menu, X, ChevronDown, Github, Twitter } from "lucide-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Balance } from "./utils/Balance";
+import { callProxy } from "../utils/api";
+import { defaultSchedule } from "../utils/utils";
 
-export const Navbar = () => {
+export const Navbar = ({ setUserSchedule }) => {
   const { wallet } = useWallet();
-  const [trigger, setTrigger] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+  const [canSchedule, setCanSchedule] = useState(false);
+  const [canUserSchedule, setCanUserSchedule] = useState(false);
   const dropdownRefs = useRef({});
+
+  useEffect(() => {
+    setUserSchedule(!canUserSchedule);
+  }, [canUserSchedule]);
+
+  useEffect(() => {
+    const fetchUserSchedule = async () => {
+      try {
+        const { status, result } = await callProxy(`twitter/schedule`, "POST", {
+          query: wallet.adapter.publicKey.toString(),
+        });
+        if (status === 200) {
+          if (result.rows && result.rows.length > 0 &&
+            JSON.stringify(result.rows) !== JSON.stringify(defaultSchedule)) {
+            const userSchedule = result.rows.map(row => ({
+              ...row,
+              caller: wallet.adapter.publicKey.toString()
+            }))
+            if (userSchedule.tweet_ids?.length > 0 || userSchedule.username !== "@") {
+              setCanUserSchedule(false);
+            } else {
+              setCanUserSchedule(true);
+            }
+          } else {
+            setCanUserSchedule(false);
+          }
+        } else {
+          throw new Error("❌ Failed to fetch schedule");
+        }
+      } catch (error) {
+        console.error("❌ Error:", error);
+        toast.error("Error fetching database");
+      }
+    }
+    if (wallet && wallet.adapter.publicKey) {
+      fetchUserSchedule();
+    }
+  }, [wallet]);
 
   // Check if the wallet is connected and log the status
   useEffect(() => {
@@ -166,9 +207,10 @@ export const Navbar = () => {
               {/* Schedule Button */}
               <button
                 onClick={() => setIsScheduleOpen(!isScheduleOpen)}
-                className={`flex items-center gap-1 text-white hover:bg-accent-steel/20 transition-colors px-4 py-2 rounded-md text-sm ${isScheduleOpen ? "bg-accent-steel/20" : "bg-accent-steel/50"} disabled:opacity-50 disabled:cursor-not-allowed`}
+                className={`relative flex items-center gap-1 text-white hover:bg-accent-steel/20 transition-colors px-4 py-2 rounded-md text-sm ${isScheduleOpen ? "bg-accent-steel/20" : "bg-accent-steel/50"} disabled:opacity-50 disabled:cursor-not-allowed`}
                 disabled={!wallet || !wallet.adapter.publicKey}
               >
+                {!canUserSchedule && <span className="absolute -top-1 -right-1 text-red-500 animate-pulse">⚠️</span>}
                 Account
               </button>
               {/* Wallet Button */}
@@ -178,7 +220,7 @@ export const Navbar = () => {
                 )}
               </div>
             </div>
-            {isScheduleOpen && <Balance setIsScheduleOpen={setIsScheduleOpen} />}
+            {isScheduleOpen && <Balance setIsScheduleOpen={setIsScheduleOpen} setCanSchedule={setCanSchedule} />}
           </div>
         </div>
       </div>
