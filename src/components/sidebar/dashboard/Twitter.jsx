@@ -84,9 +84,7 @@ export const TwitterDashboard = ({ userSchedule }) => {
     const signatureUint8Array = await wallet.adapter.signMessage(
       new TextEncoder().encode(message)
     );
-    const signature = btoa(String.fromCharCode(...signatureUint8Array));
-    setCaller(caller);
-    setTransaction(signature);
+    const transaction = btoa(String.fromCharCode(...signatureUint8Array));
 
     const tweetIds = [];
     for (const link of links) {
@@ -97,7 +95,7 @@ export const TwitterDashboard = ({ userSchedule }) => {
     }
     // Post request to process
     try {
-      handleInvestigate(tweetIds, "scrape", username);
+      handleInvestigate(tweetIds, "scrape", username, caller, transaction);
       setIsInputOpen(false);
       setActive(null);
     } catch (error) {
@@ -106,7 +104,7 @@ export const TwitterDashboard = ({ userSchedule }) => {
     }
   };
 
-  const handleInvestigate = async (slug, action, username = null) => {
+  const handleInvestigate = async (slug, action, username = null, caller = null, transaction = null) => {
     setIsModalOpen(true);
     if (action !== "scrape") {
       console.error("❌ Temporary disabled");

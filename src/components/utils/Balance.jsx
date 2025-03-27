@@ -5,8 +5,7 @@ import { toast, toastContainerConfig, defaultSchedule, useIsMobile, useIsTablet 
 import { ToastContainer } from "react-toastify";
 import { callProxy } from "../../utils/api";
 
-export const Balance = ({ setIsScheduleOpen, setCanSchedule }) => {
-  const { wallet, connected } = useWallet();
+export const Balance = ({ wallet, setIsScheduleOpen, setCanSchedule }) => {
   const [schedule, setSchedule] = useState([]);
   const [emptySchedule, setEmptySchedule] = useState(true);
   const [fetchSchedule, setFetchSchedule] = useState(true);
@@ -71,12 +70,12 @@ export const Balance = ({ setIsScheduleOpen, setCanSchedule }) => {
   );
 
   useEffect(() => {
-    if (!connected) {
+    if (!wallet.adapter.publicKey) {
       toast.error("Please connect your wallet");
       setIsScheduleOpen(false);
       return;
     }
-  }, [connected, setIsScheduleOpen]);
+  }, [wallet, setIsScheduleOpen]);
 
   useEffect(() => {
     const getSchedule = async () => {
@@ -95,7 +94,7 @@ export const Balance = ({ setIsScheduleOpen, setCanSchedule }) => {
               ...row,
               caller: wallet.adapter.publicKey.toString()
             }))
-            if (userSchedule.tweet_ids?.length > 0 || userSchedule.username !== "@") {
+            if (userSchedule[0].tweet_ids.length > 0 || userSchedule[0].username !== "@") {
               setEmptySchedule(false);
               setSchedule(userSchedule);
             } else {
@@ -117,11 +116,11 @@ export const Balance = ({ setIsScheduleOpen, setCanSchedule }) => {
       }
     };
 
-    if (connected && wallet.adapter.publicKey && fetchSchedule) {
+    if (wallet && wallet.adapter.publicKey && fetchSchedule) {
       getSchedule();
       setFetchSchedule(false);
     }
-  }, [connected, wallet, fetchSchedule]);
+  }, [wallet, fetchSchedule]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">

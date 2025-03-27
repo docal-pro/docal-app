@@ -34,7 +34,7 @@ export const Navbar = ({ setUserSchedule }) => {
               ...row,
               caller: wallet.adapter.publicKey.toString()
             }))
-            if (userSchedule.tweet_ids?.length > 0 || userSchedule.username !== "@") {
+            if (userSchedule[0].tweet_ids.length > 0 || userSchedule[0].username !== "@") {
               setCanUserSchedule(false);
             } else {
               setCanUserSchedule(true);
@@ -227,7 +227,7 @@ export const Navbar = ({ setUserSchedule }) => {
                 )}
               </div>
             </div>
-            {isScheduleOpen && <Balance setIsScheduleOpen={setIsScheduleOpen} setCanSchedule={setCanSchedule} />}
+            {isScheduleOpen && <Balance wallet={wallet} setIsScheduleOpen={setIsScheduleOpen} setCanSchedule={setCanSchedule} />}
           </div>
         </div>
       </div>
