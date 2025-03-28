@@ -27,7 +27,6 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [isClassesOpen, setIsClassesOpen] = useState(false);
-  const [selectedClasses, setSelectedClasses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
@@ -66,10 +65,28 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
 
   const handleClassesSubmit = async (classes) => {
     setIsModalOpen(true);
-    setSelectedClasses(classes);
     setIsClassesOpen(false);
-    console.error("❌ Not yet implemented");
-    toast.default("Not yet implemented");
+    const username = active;
+    const caller = wallet.adapter.publicKey.toString();
+    if (!caller) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+    const message = `Requesting signature to index with account ${caller}`;
+    const signatureUint8Array = await wallet.adapter.signMessage(
+      new TextEncoder().encode(message)
+    );
+    const transaction = btoa(String.fromCharCode(...signatureUint8Array));
+    const tweetIds = [];
+
+    // Post request to process
+    try {
+      handleInvestigate(tweetIds, "scrape", username, caller, transaction, classes);
+      setActive(null);
+    } catch (error) {
+      console.error("❌ Error:", error);
+      toast.error("Error processing tweets");
+    }
     setIsModalOpen(false);
   };
 
@@ -104,9 +121,9 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
     }
   };
 
-  const handleInvestigate = async (slug, action, username = null, caller = null, transaction = null) => {
+  const handleInvestigate = async (slug, action, username = null, caller = null, transaction = null, classes = []) => {
     setIsModalOpen(true);
-    if (action !== "scrape") {
+    if (!["scrape", "contextualise"].includes(action)) {
       console.error("❌ Not yet implemented");
       toast.default("Not yet implemented");
       setIsModalOpen(false);
@@ -115,8 +132,8 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
     const { status, result } = await callProxy("twitter/process", "POST", {
       func: getAction(action),
       user: username,
-      data: action === "scrape" ? slug.join(",") : slug,
-      ctxs: action === "classify" ? selectedClasses.join(",") : null,
+      data: action === "scrape" ? slug.length > 0 ? slug.join(",") : "," : slug,  // Passes tweet ids when scraping
+      ctxs: action === "scrape" ? classes.length > 0 ? classes.join(",") : "," : classes.join(","), // Passes contexts when blames are added
       caller,
       transaction,
     });
@@ -144,15 +161,11 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
         }
       } else {
         const updatedUsers = users.map((user) => {
-          let blob = action === "scrape" ? username : slug;
-          if (user.username === blob) {
-            return { ...user, investigate: user.investigate + 1 };
-          }
           return user;
         });
 
         setUsers(updatedUsers);
-        toast.success("Tweets indexed successfully");
+        toast.success(classes.length > 0 ? "Blames added successfully" : "Tweets indexed successfully");
       }
       setIsModalOpen(false);
     } else {
@@ -269,7 +282,10 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
                     </span>
                   </button>
                   <button
-                    onClick={() => setIsClassesOpen(true)}
+                    onClick={() => {
+                      setActive(user.username);
+                      setIsClassesOpen(true);
+                    }}
                     className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 4
                       ? "bg-white bg-opacity-10"
                       : "bg-blue-400 bg-opacity-70"
