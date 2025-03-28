@@ -7,6 +7,7 @@ import { callProxy } from "../../utils/api";
 
 export const Balance = ({ wallet, setIsScheduleOpen, setCanSchedule }) => {
   const [schedule, setSchedule] = useState([]);
+  const [explicitFetch, setExplicitFetch] = useState(false);
   const [emptySchedule, setEmptySchedule] = useState(true);
   const [fetchSchedule, setFetchSchedule] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,7 +82,7 @@ export const Balance = ({ wallet, setIsScheduleOpen, setCanSchedule }) => {
     const getSchedule = async () => {
       if (!wallet.adapter.publicKey) return;
 
-      setIsModalOpen(true);
+      if (explicitFetch) setIsModalOpen(true);
       try {
         const { status, result } = await callProxy(`twitter/schedule`, "POST", {
           query: wallet.adapter.publicKey.toString(),
@@ -113,6 +114,7 @@ export const Balance = ({ wallet, setIsScheduleOpen, setCanSchedule }) => {
         toast.error("Error fetching database");
       } finally {
         setIsModalOpen(false);
+        setExplicitFetch(false);
       }
     };
 
@@ -120,7 +122,7 @@ export const Balance = ({ wallet, setIsScheduleOpen, setCanSchedule }) => {
       getSchedule();
       setFetchSchedule(false);
     }
-  }, [wallet, fetchSchedule]);
+  }, [wallet, fetchSchedule, explicitFetch]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -168,6 +170,7 @@ export const Balance = ({ wallet, setIsScheduleOpen, setCanSchedule }) => {
             <button
               onClick={() => {
                 setFetchSchedule(true);
+                setExplicitFetch(true);
               }}
               className="mt-4 mr-2 px-3 py-2 bg-accent-steel/50 text-white rounded-md hover:bg-accent-steel/20 transition text-sm"
             >
