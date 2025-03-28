@@ -1,6 +1,6 @@
 import { useState, useEffect, use } from "react";
 import {
-  fakeUsers,
+  defaultUsers,
   sanitise,
   getAction,
   getScoreColor,
@@ -32,7 +32,7 @@ export const DiscourseDashboard = ({ userSchedule, setOutcome }) => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      setUsers(fakeUsers);
+      setUsers(defaultUsers);
       return;
       try {
         const { status, result } = await callProxy("discourse/db");
@@ -43,7 +43,7 @@ export const DiscourseDashboard = ({ userSchedule, setOutcome }) => {
           const users = sanitise(db);
           setUsers(users);
         } else {
-          setUsers(fakeUsers);
+          setUsers(defaultUsers);
         }
       } catch (error) {
         console.error("❌ Error:", error);
