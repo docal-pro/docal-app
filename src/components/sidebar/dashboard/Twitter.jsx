@@ -23,6 +23,7 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
   const { wallet } = useWallet();
   const [users, setUsers] = useState([]);
   const [active, setActive] = useState(null);
+  const [contextualise, setContextualise] = useState(false);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [searchQuery, setSearchQuery] = useState("");
   const [isInputOpen, setIsInputOpen] = useState(false);
@@ -62,6 +63,40 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
     };
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    const contextualiseTweets = async () => {
+      if (contextualise) {
+        toast.default("Not yet implemented");
+        setContextualise(false);
+        return;
+        setIsModalOpen(true);
+        const username = active;
+        const caller = wallet.adapter.publicKey.toString();
+        if (!caller) {
+          toast.error("Please connect your wallet");
+          return;
+        }
+        const message = `Requesting signature to index with account ${caller}`;
+        const signatureUint8Array = await wallet.adapter.signMessage(
+          new TextEncoder().encode(message)
+        );
+        const transaction = btoa(String.fromCharCode(...signatureUint8Array));
+        const tweetIds = [];
+
+        // Post request to process
+        try {
+          handleInvestigate(tweetIds, "contextualise", username, caller, transaction);
+          setActive(null);
+        } catch (error) {
+          console.error("❌ Error:", error);
+          toast.error("Error contextualising tweets");
+        }
+        setIsModalOpen(false);
+      }
+    }
+    contextualiseTweets();
+  }, [contextualise, wallet]);
 
   const handleClassesSubmit = async (classes) => {
     setIsModalOpen(true);
@@ -123,7 +158,7 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
 
   const handleInvestigate = async (slug, action, username = null, caller = null, transaction = null, classes = []) => {
     setIsModalOpen(true);
-    if (!["scrape", "contextualise"].includes(action)) {
+    if (!["scrape"].includes(action)) {
       console.error("❌ Not yet implemented");
       toast.default("Not yet implemented");
       setIsModalOpen(false);
@@ -132,11 +167,15 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
     const { status, result } = await callProxy("twitter/process", "POST", {
       func: getAction(action),
       user: username,
-      data: action === "scrape" ? slug.length > 0 ? slug.join(",") : "," : slug,  // Passes tweet ids when scraping
-      ctxs: action === "scrape" ? classes.length > 0 ? classes.join(",") : "," : classes.join(","), // Passes contexts when blames are added
+      data: slug.length > 0 ? slug.join(",") : ",",  // Passes tweet ids when scraping
+      ctxs: classes.length > 0 ? classes.join(",") : ",", // Passes contexts when blames are added
       caller,
       transaction,
     });
+
+    if (action === "contextualise") {
+      setContextualise(false);
+    }
 
     if (status === 200) {
       if (result.result.includes("Tweets already exist")) {
@@ -152,6 +191,21 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
       } else if (result.result.includes("DenyLoginSubtask")) {
         toast.error("Twitter firewalled. Try again later!");
         setOutcome(false);
+      } else if (result.result.includes("Processing complete")) {
+        const processed = result.result.match(/processed_tweets:\s*(\d+)/);
+        const processedCount = processed ? processed[1] : 0;
+        if (processedCount > 0) {
+          const updatedUsers = users.map((user) => {
+            if (user.username === username) {
+              return { ...user, investigate: user.investigate + 1 };
+            }
+            return user;
+          });
+          setUsers(updatedUsers);
+          toast.success(`Some tweets contextualised successfully`);
+        } else {
+          toast.error("Internal server error. No tweets contextualised");
+        }
       } else if (result.result.includes("tweets saved to")) {
         const successRate = result.result.split("(")[1].split(")")[0].split("/");
         if (successRate[0] === successRate[1]) {
@@ -160,11 +214,6 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
           toast.success(`Some tweets indexed successfully. Duplicates ignored.`);
         }
       } else {
-        const updatedUsers = users.map((user) => {
-          return user;
-        });
-
-        setUsers(updatedUsers);
         toast.success(classes.length > 0 ? "Blames added successfully" : "Tweets indexed successfully");
       }
       setIsModalOpen(false);
@@ -267,26 +316,11 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
                     </span>
                   </button>
                   <button
-                    onClick={() =>
-                      handleInvestigate(user.username, "contextualise")
-                    }
-                    className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 2
-                      ? "bg-white bg-opacity-10"
-                      : "bg-blue-400 bg-opacity-70"
-                      } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
-                    disabled={userSchedule}
-                  >
-                    <i className="fa-solid fa-mortar-pestle"></i>
-                    <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-36 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
-                      {`Contextualise information`}
-                    </span>
-                  </button>
-                  <button
                     onClick={() => {
                       setActive(user.username);
                       setIsClassesOpen(true);
                     }}
-                    className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 4
+                    className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 1
                       ? "bg-white bg-opacity-10"
                       : "bg-blue-400 bg-opacity-70"
                       } hover:bg-transparent rounded relative group disabled:cursor-not-allowed`}
@@ -295,6 +329,23 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
                     <i className="fa-solid fa-object-group"></i>
                     <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
                       {`Add classes to blame`}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActive(user.username);
+                      setContextualise(true);
+                    }
+                    }
+                    className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 2
+                      ? "bg-white bg-opacity-10"
+                      : "bg-blue-400 bg-opacity-70"
+                      } hover:bg-transparent rounded relative group disabled:cursor-not-allowed ${contextualise ? "animate-pulse" : ""}`}
+                    disabled={userSchedule}
+                  >
+                    <i className="fa-solid fa-mortar-pestle"></i>
+                    <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-36 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
+                      {`Contextualise information`}
                     </span>
                   </button>
                   <button
@@ -311,7 +362,6 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
                     </span>
                   </button>
                   <button
-                    hidden
                     onClick={() => handleInvestigate(user.username, "extract")}
                     className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 4
                       ? "bg-white bg-opacity-10"
@@ -325,7 +375,6 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
                     </span>
                   </button>
                   <button
-                    hidden
                     onClick={() => handleInvestigate(user.username, "evaluate")}
                     className={`mx-[2px] px-1 lg:px-2 py-1 ${user.investigate < 5
                       ? "bg-white bg-opacity-10"
