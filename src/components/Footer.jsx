@@ -19,8 +19,20 @@ export const Footer = () => {
             <p className="text-gray-400 text-sm">
               Crypto & Web3 Watchdog Project
             </p>
-            <span className="text-gray-400 text-xs">
-              CA:&nbsp;<span className="font-ocr text-gray-400 tracking-tighter rounded bg-black bg-opacity-30 px-[3px] pt-[6px] pb-[4px]">9Xvf63h7aX6d7mCocKyjvyJ3ajGWFztMsGeCmZWapump</span>
+            <span className="text-gray-400 text-xs relative group">
+              CA:&nbsp;<span
+                className="font-ocr text-gray-400 tracking-tighter rounded bg-black bg-opacity-50 px-[5px] pt-[7px] pb-[5px] cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText("9Xvf63h7aX6d7mCocKyjvyJ3ajGWFztMsGeCmZWapump");
+                  document.getElementById("address-text").classList.toggle("text-green-500");
+                }}
+                id="address-text"
+              >
+                9Xvf63h7aX6d7mCocKyjvyJ3ajGWFztMsGeCmZWapump
+              </span>
+              <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-y-full -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
+                {`Copy CA`}
+              </span>
             </span>
           </div>
 
