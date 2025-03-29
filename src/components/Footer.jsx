@@ -19,6 +19,9 @@ export const Footer = () => {
             <p className="text-gray-400 text-sm">
               Crypto & Web3 Watchdog Project
             </p>
+            <span className="text-gray-400 text-xs">
+              CA:&nbsp;<span className="font-mono text-gray-300 tracking-wide bg-black rounded px-[6px] py-[2px]">9Xvf63h7aX6d7mCocKyjvyJ3ajGWFztMsGeCmZWapump</span>
+            </span>
           </div>
 
           {/* Quick Links */}

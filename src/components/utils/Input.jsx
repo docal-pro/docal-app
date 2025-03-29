@@ -87,7 +87,7 @@ export const Input = ({ isOpen, onClose, onSubmit, maxTweets = 5 }) => {
               <h2 className="text-xl font-ocr text-gray-300 tracking-tight">
                 Enter Tweet Links
               </h2>
-              <h3 className="text-sm font-sfmono text-gray-500">
+              <h3 className="text-sm font-mono text-gray-500">
                 • maximum {maxTweets} tweets
               </h3>
             </div>

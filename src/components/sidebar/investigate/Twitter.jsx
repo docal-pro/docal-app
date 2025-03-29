@@ -128,11 +128,13 @@ export const Twitter = ({ userSchedule, setOutcome }) => {
           toast.error("Username mismatch");
         } else if (result.result.includes("Incorrect number of arguments")) {
           toast.error("Internal server error");
-        } else if (result.result.includes("DenyLoginSubtask")) {
+        } else if (result.result.includes("DenyLoginSubtask") || result.result.includes("Please try again")) {
           toast.error("Twitter firewalled. Try again later!");
           setTimeout(() => {
             setOutcome(false);
           }, 3000);
+        } else if (result.result.includes("Failed to fetch tweets")) {
+          toast.error("Failed to fetch tweets");
         } else if (result.result.includes("tweets saved to")) {
           const successRate = result.result.split("(")[1].split(")")[0].split("/");
           if (successRate[0] === successRate[1]) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown, Github, Twitter } from "lucide-react";
+import { Menu, X, ChevronDown, Github, Twitter, CloudRain, Send, CircleX } from "lucide-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Balance } from "./utils/Balance";
@@ -180,6 +180,15 @@ export const Navbar = ({ setUserSchedule }) => {
                 >
                   <Twitter size={16} />X
                 </a>
+                <a
+                  href=""
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-white hover:bg-gray-800 opacity-50 cursor-not-allowed"
+                >
+                  <Send size={16} />
+                  Telegram
+                </a>
               </div>
             </div>
 
@@ -205,6 +214,7 @@ export const Navbar = ({ setUserSchedule }) => {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-4 py-2 text-sm text-white hover:bg-gray-800"
                 >
+                  <CloudRain size={16} />
                   DOCAL AI
                 </a>
               </div>
@@ -217,7 +227,7 @@ export const Navbar = ({ setUserSchedule }) => {
                 className={`relative flex items-center gap-1 text-white hover:bg-accent-steel/20 transition-colors px-4 py-2 rounded-md text-sm ${isScheduleOpen ? "bg-accent-steel/20" : "bg-accent-steel/50"} disabled:opacity-50 disabled:cursor-not-allowed`}
                 disabled={!wallet || !wallet.adapter.publicKey}
               >
-                {!canUserSchedule && isWalletConnected && <span className="absolute -top-1 -right-1 text-red-500 animate-pulse">⚠️</span>}
+                {!canUserSchedule && isWalletConnected && <span className="absolute -top-1 -right-1 text-red-400"><CircleX size={16} /></span>}
                 Account
               </button>
               {/* Wallet Button */}

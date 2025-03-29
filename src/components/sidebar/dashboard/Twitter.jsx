@@ -188,9 +188,13 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
         toast.error("Username mismatch");
       } else if (result.result.includes("Incorrect number of arguments")) {
         toast.error("Internal server error");
-      } else if (result.result.includes("DenyLoginSubtask")) {
+      } else if (result.result.includes("DenyLoginSubtask") || result.result.includes("Please try again")) {
         toast.error("Twitter firewalled. Try again later!");
-        setOutcome(false);
+        setTimeout(() => {
+          setOutcome(false);
+        }, 3000);
+      } else if (result.result.includes("Failed to fetch tweets")) {
+        toast.error("Failed to fetch tweets");
       } else if (result.result.includes("Processing complete")) {
         const processed = result.result.match(/processed_tweets:\s*(\d+)/);
         const processedCount = processed ? processed[1] : 0;
@@ -383,7 +387,7 @@ export const TwitterDashboard = ({ userSchedule, setOutcome }) => {
                     disabled={userSchedule}
                   >
                     <i className="fa-solid fa-scale-unbalanced-flip"></i>
-                    <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-30 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
+                    <span className="font-ocr absolute text-xs lg:text-md tracking-tight p-2 bg-black rounded-md w-32 -translate-x-full lg:-translate-x-full -translate-y-1/2 -mt-6 md:-mt-8 text-center text-gray-300 hidden group-hover:block z-10">
                       {`Evaluate`}
                     </span>
                   </button>
